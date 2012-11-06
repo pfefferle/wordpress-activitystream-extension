@@ -164,7 +164,7 @@ class ActivityExtension {
       $author .= "<link rel='avatar' type='image/jpeg' media:width='300' media:height='300' href='$gravatar?s=300' />\n";
       $author .= "<link rel='avatar' type='image/jpeg' media:width='96' media:height='96' href='$gravatar?s=96'/>\n";
       $author .= "<link rel='avatar' type='image/jpeg' media:width='48' media:height='48' href='$gravatar?s=48'/>\n";
- 			$author .= "<link rel='avatar' type='image/jpeg' media:width='24' media:height='24' href='$gravatar?s=24'/>\n";
+      $author .= "<link rel='avatar' type='image/jpeg' media:width='24' media:height='24' href='$gravatar?s=24'/>\n";
       $author .= "<poco:preferredUsername>".$user->user_nicename."</poco:preferredUsername>\n";
       $author .= "<poco:displayName>".$user->display_name."</poco:displayName>\n";
       
