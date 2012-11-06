@@ -150,7 +150,7 @@ class ActivityExtension {
   }
 
   function addActivityAuthor() {
-	  if (is_author()) {
+    if (is_author()) {
       if(get_query_var('author_name')) :
         $user = get_user_by('slug', get_query_var('author_name'));
       else :
@@ -160,18 +160,18 @@ class ActivityExtension {
       $gravatar = "http://www.gravatar.com/avatar/".md5(strtolower($user->user_email));
 
       $author = "<activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n";
-			$author .= "<link rel='alternate' type='text/html' href='" . get_author_posts_url($user->ID, $user->user_nicename) . "' />\n";
-			$author .= "<link rel='avatar' type='image/jpeg' media:width='300' media:height='300' href='$gravatar?s=300' />\n";
- 			$author .= "<link rel='avatar' type='image/jpeg' media:width='96' media:height='96' href='$gravatar?s=96'/>\n";
-  		$author .= "<link rel='avatar' type='image/jpeg' media:width='48' media:height='48' href='$gravatar?s=48'/>\n";
+      $author .= "<link rel='alternate' type='text/html' href='" . get_author_posts_url($user->ID, $user->user_nicename) . "' />\n";
+      $author .= "<link rel='avatar' type='image/jpeg' media:width='300' media:height='300' href='$gravatar?s=300' />\n";
+      $author .= "<link rel='avatar' type='image/jpeg' media:width='96' media:height='96' href='$gravatar?s=96'/>\n";
+      $author .= "<link rel='avatar' type='image/jpeg' media:width='48' media:height='48' href='$gravatar?s=48'/>\n";
  			$author .= "<link rel='avatar' type='image/jpeg' media:width='24' media:height='24' href='$gravatar?s=24'/>\n";
-  		$author .= "<poco:preferredUsername>".$user->user_nicename."</poco:preferredUsername>\n";
-  		$author .= "<poco:displayName>".$user->display_name."</poco:displayName>\n";
+      $author .= "<poco:preferredUsername>".$user->user_nicename."</poco:preferredUsername>\n";
+      $author .= "<poco:displayName>".$user->display_name."</poco:displayName>\n";
+      
       if ($description = $user->user_description) {
-	      $author .= "<poco:note><![CDATA[$description]]></poco:note>\n";
-			}
-
-			echo $author;
-	  }
+        $author .= "<poco:note><![CDATA[$description]]></poco:note>\n";
+      }
+      echo $author;
+    }
   }
 }
