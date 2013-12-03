@@ -4,29 +4,28 @@ Plugin Name: ActivityStream extension
 Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
 Description: An extensions which adds the ActivityStream (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) syntax to your Atom-Feed
 Author: Matthias Pfefferle
-Version: 0.8
+Version: 1.0.0-dev
 Author URI: http://notizblog.org
 */
 
-add_action('atom_ns', array('ActivityExtension', 'addActivityNamespace'));
-add_action('atom_entry', array('ActivityExtension', 'addActivityObject'));
-add_action('atom_author', array('ActivityExtension', 'addActivityAuthor')); // run before output
-add_action('comment_atom_ns', array('ActivityExtension', 'addActivityNamespace'));
-add_action('comment_atom_entry', array('ActivityExtension', 'addCommentActivityObject'));
-add_action('wp_head', array('ActivityExtension', 'addHtmlHeader'), 5);
-add_filter('query_vars', array('ActivityExtension', 'queryVars'));
+add_action('atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
+add_action('atom_entry', array('ActivityExtension', 'add_atom_activity_object'));
+add_action('atom_author', array('ActivityExtension', 'add_atom_activity_author')); // run before output
+add_action('comment_atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
+add_action('comment_atom_entry', array('ActivityExtension', 'add_comment_atom_activity_object'));
+add_action('wp_head', array('ActivityExtension', 'add_html_header'), 5);
+add_filter('query_vars', array('ActivityExtension', 'query_vars'));
 
 // add 'json' as feed
-add_action('do_feed_json', array('ActivityExtension', 'doFeedJson'));
+add_action('do_feed_as1', array('ActivityExtension', 'do_feed_as1'));
 add_action('init', array('ActivityExtension', 'init'));
+add_filter('as1_json_object_type', array('ActivityExtension', 'post_object_type'), 10, 2);
 
 // push json feed
-//add_filter('pshb_feed_urls', array('ActivityExtension', 'publishToHub'));
+add_filter('pshb_feed_urls', array('ActivityExtension', 'publish_to_hub'));
 
-register_activation_hook(__FILE__, array('ActivityExtension', 'flushRewriteRules'));
-register_deactivation_hook(__FILE__, array('ActivityExtension', 'flushRewriteRules'));
-
-
+register_activation_hook(__FILE__, array('ActivityExtension', 'flush_rewrite_rules'));
+register_deactivation_hook(__FILE__, array('ActivityExtension', 'flush_rewrite_rules'));
 
 /**
  * ActivityStream Extension
@@ -37,55 +36,104 @@ class ActivityExtension {
   /**
    * init function
    */
-  function init() {
-    add_feed('json', array('ActivityExtension', 'doFeedJson'));
+  public static function init() {
+    add_feed('as1', array('ActivityExtension', 'do_feed_as1'));
+  }
+
+  /**
+   * Add 'callback' as a valid query variables.
+   *
+   * @param array $vars
+   * @return array
+   */
+  public static function query_vars($vars) {
+    $vars[] = 'callback';
+    $vars[] = 'feed';
+    $vars[] = 'pretty';
+
+    return $vars;
   }
 
   /**
    * reset rewrite rules
    */
-  function flushRewriteRules() {
+  public static function flush_rewrite_rules() {
     global $wp_rewrite;
     $wp_rewrite->flush_rules();
   }
 
   /**
-   * echos the activitystream namespace
+   * echos autodiscovery links
    */
-  function addActivityNamespace() {
-    echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'." \n";
-    echo 'xmlns:media="http://purl.org/syndication/atommedia"'." \n";
-    echo 'xmlns:poco="http://portablecontacts.net/spec/1.0"'." \n";
+  public static function add_html_header() {
+    echo '<link rel="alternate" type="application/stream+json" href="'.get_feed_link('as1_json').'" />'."\n";
+    echo '<link rel="alternate" type="application/stream+xml" href="'.get_feed_link('atom').'" />'."\n";
   }
 
   /**
-   * echos autodiscovery links
+   * echos the activitystream namespace
    */
-  function addHtmlHeader() {
-    echo '<link rel="activities" type="application/atom+xml" href="'.get_bloginfo('atom_url').'" />'."\n";
-    echo '<link rel="alternate activities" type="application/activitystream+json" href="'.get_feed_link('json').'" />'."\n";
+  public static function add_atom_activity_namespace() {
+    echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'."\n";
   }
 
   /**
    * echos the activity verb and object for the wordpress entries
    */
-  function addActivityObject() {
-    switch (get_post_type()) {
-      case "aside":
-      case "status":
-      case "quote":
-      case "note":
-        $post_type = "note";
+  public static function add_atom_activity_object() {
+    $post_type = get_post_type();
+    switch ( $post_type ) {
+      case "post":
+        $post_format = get_post_format();
+        switch ( $post_format ) {
+          case "aside":
+          case "status":
+          case "quote":
+          case "note":
+            $object_type = "note";
+            break;
+          case "gallery":
+          case "image":
+            $object_type = "image";
+            break;
+          case "video":
+            $object_type = "video";
+            break;
+          case "audio":
+            $object_type = "audio";
+            break;
+          default:
+            $object_type = "article";
+            break;
+        }
+        break;
+      case "page":
+        $object_type = "page";
+        break;
+      case "attachment":
+        $mime_type = get_post_mime_type();
+        $media_type = preg_replace("/(\/[a-zA-Z]+)/i", "", $mime_type);
+
+        switch ($media_type) {
+          case 'audio':
+            $object_type = "audio";
+            break;
+          case 'video':
+            $object_type = "video";
+            break;
+          case 'image':
+            $object_type = "image";
+            break;
+        }
         break;
       default:
-        $post_type = "article";
+        $object_type = "article";
         break;
     }
 ?>
-
     <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
     <activity:object>
-      <activity:object-type>http://activitystrea.ms/schema/1.0/<?php echo $post_type; ?></activity:object-type>
+      <activity:object-type>http://activitystrea.ms/schema/1.0/<?php echo $object_type; ?></activity:object-type>
       <id><?php the_guid(); ?></id>
       <title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
       <summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
@@ -97,7 +145,7 @@ class ActivityExtension {
   /**
    * echos the activity verb and object for the wordpress comments
    */
-  function addCommentActivityObject() {
+  public static function add_comment_atom_activity_object() {
 ?>
     <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
     <activity:object>
@@ -120,22 +168,14 @@ class ActivityExtension {
   /**
    * adds a json feed
    */
-  function doFeedJson() {
-    // load template
-    load_template(dirname(__FILE__) . '/feed-json.php');
-  }
-
-  /**
-   * Add 'callback' as a valid query variables.
-   *
-   * @param array $vars
-   * @return array
-   */
-  function queryVars($vars) {
-    $vars[] = 'callback';
-    $vars[] = 'feed';
-
-    return $vars;
+  public static function do_feed_as1() {
+    if (is_comment_feed()) {
+      // load template
+      load_template(dirname(__FILE__) . '/feed-as1-comments.php');
+    } else {
+      // load template
+      load_template(dirname(__FILE__) . '/feed-as1.php');
+    }
   }
 
   /**
@@ -144,34 +184,70 @@ class ActivityExtension {
    * @param array $feeds
    * @return array
    */
-  function publishToHub($feeds) {
-    $feeds[] = get_feed_link('json');
+  public static function publish_to_hub($feeds) {
+    $feeds[] = get_feed_link('as1');
+
     return $feeds;
   }
 
-  function addActivityAuthor() {
-    if (is_author()) {
-      if(get_query_var('author_name')) :
-        $user = get_user_by('slug', get_query_var('author_name'));
-      else :
-        $user = get_userdata(get_query_var('author'));
-      endif;
+  public static function add_atom_activity_author() {
+?>
+    <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+    <link rel='alternate' type='text/html' href='<?php echo get_author_posts_url( get_the_author_meta( "ID" ) ); ?>' />
+<?php
+  }
 
-      $gravatar = "http://www.gravatar.com/avatar/".md5(strtolower($user->user_email));
+  public static function post_object_type($type, $post) {
+    $post_type = get_post_type($post);
+    switch ( $post_type ) {
+      case "post":
+        $post_format = get_post_format($post);
+        switch ( $post_format ) {
+          case "aside":
+          case "status":
+          case "quote":
+          case "note":
+            $object_type = "note";
+            break;
+          case "gallery":
+          case "image":
+            $object_type = "image";
+            break;
+          case "video":
+            $object_type = "video";
+            break;
+          case "audio":
+            $object_type = "audio";
+            break;
+          default:
+            $object_type = "article";
+            break;
+        }
+        break;
+      case "page":
+        $object_type = "page";
+        break;
+      case "attachment":
+        $mime_type = get_post_mime_type();
+        $media_type = preg_replace("/(\/[a-zA-Z]+)/i", "", $mime_type);
 
-      $author = "<activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>\n";
-      $author .= "<link rel='alternate' type='text/html' href='" . get_author_posts_url($user->ID, $user->user_nicename) . "' />\n";
-      $author .= "<link rel='avatar' type='image/jpeg' media:width='300' media:height='300' href='$gravatar?s=300' />\n";
-      $author .= "<link rel='avatar' type='image/jpeg' media:width='96' media:height='96' href='$gravatar?s=96'/>\n";
-      $author .= "<link rel='avatar' type='image/jpeg' media:width='48' media:height='48' href='$gravatar?s=48'/>\n";
-      $author .= "<link rel='avatar' type='image/jpeg' media:width='24' media:height='24' href='$gravatar?s=24'/>\n";
-      $author .= "<poco:preferredUsername>".$user->user_nicename."</poco:preferredUsername>\n";
-      $author .= "<poco:displayName>".$user->display_name."</poco:displayName>\n";
-      
-      if ($description = $user->user_description) {
-        $author .= "<poco:note><![CDATA[$description]]></poco:note>\n";
-      }
-      echo $author;
+        switch ($media_type) {
+          case 'audio':
+            $object_type = "audio";
+            break;
+          case 'video':
+            $object_type = "video";
+            break;
+          case 'image':
+            $object_type = "image";
+            break;
+        }
+        break;
+      default:
+        $object_type = "article";
+        break;
     }
+
+    return $object_type;
   }
 }
