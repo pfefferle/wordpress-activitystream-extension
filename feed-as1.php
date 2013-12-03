@@ -16,7 +16,7 @@ header( 'Content-Type: application/stream+json; charset=' . get_option( 'blog_ch
  *
  * @param string $callback The JSONP callback function name
  */
-$callback = apply_filters( 'as1_json_feed_callback', get_query_var( 'callback' ) );
+$callback = apply_filters( 'as1_feed_callback', get_query_var( 'callback' ) );
 
 if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
   status_header( 400 );
@@ -39,7 +39,7 @@ if ( preg_match( '/\W/', $callback ) ) {
 /*
  * Action triggerd prior to the AS1 feed being created and sent to the client
  */
-do_action( 'as1_json_feed_pre' );
+do_action( 'as1_feed_pre' );
 
 while( have_posts() ) {
   the_post();
@@ -47,10 +47,9 @@ while( have_posts() ) {
   /*
    * The object type of the current post in the Activity Streams 1 feed
    *
-   * @param string $object_type The current object type
-   * @param string $post_type The current post type
+   * @param Object get_post() The current post
    */
-  $object_type = apply_filters( 'as1_json_object_type', 'article', get_post() );
+  $object_type = apply_filters( 'as1_object_type', 'article', get_post() );
 
   $item = array(
     'published' => get_post_modified_time( 'Y-m-d\TH:i:s\Z', true ),
@@ -92,11 +91,9 @@ while( have_posts() ) {
   /*
    * The item to be added to the Activity Streams 1 feed
    *
-   * @since 3.8.0
-   *
    * @param object $item The Activity Streams 1 item
    */
-  $item = apply_filters( 'as1_json_feed_item', $item );
+  $item = apply_filters( 'as1_feed_item', $item );
 
   $json->items[] = $item;
 }
@@ -104,11 +101,9 @@ while( have_posts() ) {
 /*
  * The array of data to be sent to the user as JSON
  *
- * @since 3.8.0
- *
  * @param object $json The JSON data object
  */
-$json = apply_filters( 'as1_json_feed', $json );
+$json = apply_filters( 'as1_feed', $json );
 
 if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
   // json_encode() options added in PHP 5.3
@@ -122,11 +117,9 @@ if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
   /*
    * Options to be passed to json_encode()
    *
-   * @since 3.8.0
-   *
    * @param int $options The current options flags
    */
-  $options = apply_filters( 'as1_json_feed_options', $options );
+  $options = apply_filters( 'as1_feed_options', $options );
 
   $json_str = json_encode( $json, $options );
 }
@@ -139,4 +132,4 @@ else
 /*
  * Action triggerd after the AS1 feed has been created and sent to the client
  */
-do_action( 'as1_json_feed_post' );
+do_action( 'as1_feed_post' );

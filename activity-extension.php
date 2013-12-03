@@ -81,55 +81,12 @@ class ActivityExtension {
    * echos the activity verb and object for the wordpress entries
    */
   public static function add_atom_activity_object() {
-    $post_type = get_post_type();
-    switch ( $post_type ) {
-      case "post":
-        $post_format = get_post_format();
-        switch ( $post_format ) {
-          case "aside":
-          case "status":
-          case "quote":
-          case "note":
-            $object_type = "note";
-            break;
-          case "gallery":
-          case "image":
-            $object_type = "image";
-            break;
-          case "video":
-            $object_type = "video";
-            break;
-          case "audio":
-            $object_type = "audio";
-            break;
-          default:
-            $object_type = "article";
-            break;
-        }
-        break;
-      case "page":
-        $object_type = "page";
-        break;
-      case "attachment":
-        $mime_type = get_post_mime_type();
-        $media_type = preg_replace("/(\/[a-zA-Z]+)/i", "", $mime_type);
-
-        switch ($media_type) {
-          case 'audio':
-            $object_type = "audio";
-            break;
-          case 'video':
-            $object_type = "video";
-            break;
-          case 'image':
-            $object_type = "image";
-            break;
-        }
-        break;
-      default:
-        $object_type = "article";
-        break;
-    }
+    /*
+     * The object type of the current post in the Activity Streams 1 feed
+     *
+     * @param Object $comment_post The current post
+     */
+    $object_type = apply_filters( 'as1_object_type', 'article', get_post() );
 ?>
     <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
     <activity:object>
@@ -196,7 +153,14 @@ class ActivityExtension {
     <link rel='alternate' type='text/html' href='<?php echo get_author_posts_url( get_the_author_meta( "ID" ) ); ?>' />
 <?php
   }
-
+  
+  /**
+   * returns the activity object for a given post
+   *
+   * @param string $type the object type
+   * @param Object $post the post object
+   * @return string the object type
+   */
   public static function post_object_type($type, $post) {
     $post_type = get_post_type($post);
     switch ( $post_type ) {

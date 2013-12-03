@@ -1,6 +1,6 @@
 <?php
 /**
- * Activity Streams 1 Feed Template for displaying AS1 Posts feed.
+ * Activity Streams 1 Feed Template for displaying AS1 Comments feed.
  *
  * @link https://github.com/pento/7B a lot of changes made by @pento
  */
@@ -16,7 +16,7 @@ header( 'Content-Type: application/stream+json; charset=' . get_option( 'blog_ch
  *
  * @param string $callback The JSONP callback function name
  */
-$callback = apply_filters( 'as1_json_feed_callback', get_query_var( 'callback' ) );
+$callback = apply_filters( 'as1_feed_callback', get_query_var( 'callback' ) );
 
 if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
   status_header( 400 );
@@ -39,7 +39,7 @@ if ( preg_match( '/\W/', $callback ) ) {
 /*
  * Action triggerd prior to the AS1 feed being created and sent to the client
  */
-do_action( 'commentsas1_json_feed_pre' );
+do_action( 'comments_as1_feed_pre' );
 
 while( have_comments() ) {
   the_comment();
@@ -49,18 +49,16 @@ while( have_comments() ) {
   /*
    * The object type of the current post in the Activity Streams 1 feed
    *
-   * @param string $object_type The current object type
-   * @param string $post_type The current post type
+   * @param Object $comment_post The current post
    */
-  $object_type = apply_filters( 'as1_json_object_type', 'post', $comment_post );
+  $object_type = apply_filters( 'as1_object_type', 'article', $comment_post );
 
   /*
-   * The object type of the current post in the Activity Streams 1 feed
+   * The object type of the current comment in the Activity Streams 1 feed
    *
-   * @param string $object_type The current object type
-   * @param string $post_type The current post type
+   * @param Object $comment The current comment
    */
-  $comment_object_type = apply_filters( 'commentsas1_json_object_type', 'comment', $comment );
+  $comment_object_type = apply_filters( 'comments_as1_object_type', 'comment', $comment );
 
   $item = array(
     'published' => get_comment_time( 'Y-m-d\TH:i:s\Z', true ),
@@ -75,7 +73,7 @@ while( have_comments() ) {
       'id'    => get_the_guid($comment_post->ID),
       'displayName' => get_the_title($comment_post->ID),
       'objectType'  => $object_type,
-      'summary'   => get_the_excerpt($comment_post->ID),
+      'summary'   => get_the_excerpt(),
       'url'   => get_permalink($comment_post->ID)
     ),
     'object' => (object)array(
@@ -105,7 +103,7 @@ while( have_comments() ) {
    *
    * @param object $item The Activity Streams 1 item
    */
-  $item = apply_filters( 'commentsas1_json_feed_item', $item );
+  $item = apply_filters( 'comments_as1_feed_item', $item );
 
   $json->items[] = $item;
 }
@@ -115,7 +113,7 @@ while( have_comments() ) {
  *
  * @param object $json The JSON data object
  */
-$json = apply_filters( 'as1_json_feed', $json );
+$json = apply_filters( 'as1_feed', $json );
 
 if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
   // json_encode() options added in PHP 5.3
@@ -129,11 +127,9 @@ if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
   /*
    * Options to be passed to json_encode()
    *
-   * @since 3.8.0
-   *
    * @param int $options The current options flags
    */
-  $options = apply_filters( 'as1_json_feed_options', $options );
+  $options = apply_filters( 'as1_feed_options', $options );
 
   $json_str = json_encode( $json, $options );
 }
@@ -146,4 +142,4 @@ else
 /*
  * Action triggerd after the AS1 feed has been created and sent to the client
  */
-do_action( 'commentsas1_json_feed_post' );
+do_action( 'comments_as1_feed_post' );
