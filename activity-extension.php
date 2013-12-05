@@ -2,10 +2,10 @@
 /*
 Plugin Name: ActivityStream extension
 Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
-Description: An extensions which adds the ActivityStream (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) syntax to your Atom-Feed
+Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
 Author: Matthias Pfefferle
-Version: 1.0.0-dev
 Author URI: http://notizblog.org
+Version: 1.0.0-dev
 */
 
 add_action('atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
