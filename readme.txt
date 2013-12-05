@@ -3,7 +3,7 @@ Contributors: pfefferle
 Donate link: http://14101978.de
 Tags: Activities, Activity Stream, Feed, RSS, Atom, OStatus, OStatus Stack, JSON
 Requires at least: 3.2
-Tested up to: 3.2.1
+Tested up to: 3.7.1
 Stable tag: 0.8
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON)
