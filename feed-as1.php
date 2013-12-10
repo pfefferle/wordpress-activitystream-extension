@@ -9,7 +9,7 @@ $json = new stdClass();
 
 $json->items = array();
 
-header( 'Content-Type: application/stream+json; charset=' . get_option( 'blog_charset' ), true );
+header( 'Content-Type: ' . feed_content_type("as1") . '; charset=' . get_option( 'blog_charset' ), true );
 
 /*
  * The JSONP callback function to add to the JSON feed

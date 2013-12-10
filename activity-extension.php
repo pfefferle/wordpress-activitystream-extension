@@ -15,11 +15,12 @@ add_action('comment_atom_ns', array('ActivityExtension', 'add_atom_activity_name
 add_action('comment_atom_entry', array('ActivityExtension', 'add_comment_atom_activity_object'));
 add_action('wp_head', array('ActivityExtension', 'add_html_header'), 5);
 add_filter('query_vars', array('ActivityExtension', 'query_vars'));
+add_filter('feed_content_type', array('ActivityExtension', 'feed_content_type'), 10, 2);
 
 // add 'json' as feed
-add_action('do_feed_as1', array('ActivityExtension', 'do_feed_as1'));
+add_action('do_feed_as1', array('ActivityExtension', 'do_feed_as1'), 10, 1);
 add_action('init', array('ActivityExtension', 'init'));
-add_filter('as1_json_object_type', array('ActivityExtension', 'post_object_type'), 10, 2);
+add_filter('as1_object_type', array('ActivityExtension', 'post_object_type'), 10, 2);
 
 // push json feed
 add_filter('pshb_feed_urls', array('ActivityExtension', 'publish_to_hub'));
@@ -37,11 +38,12 @@ class ActivityExtension {
    * init function
    */
   public static function init() {
+    // add the as1 feed
     add_feed('as1', array('ActivityExtension', 'do_feed_as1'));
   }
 
   /**
-   * Add 'callback' as a valid query variables.
+   * add 'callback' as a valid query variables.
    *
    * @param array $vars
    * @return array
@@ -52,6 +54,21 @@ class ActivityExtension {
     $vars[] = 'pretty';
 
     return $vars;
+  }
+
+  /**
+   * adds "as1" content-type
+   *
+   * @param string $content_type the default content-type
+   * @param string $type the feed-type
+   * @return string the as1 content-type
+   */
+  public static function feed_content_type($content_type, $type) {
+    if ($type == "as1") {
+      return 'application/stream+json';
+    }
+
+    return $content_type;
   }
 
   /**
@@ -66,8 +83,20 @@ class ActivityExtension {
    * echos autodiscovery links
    */
   public static function add_html_header() {
-    echo '<link rel="alternate" type="application/stream+json" href="'.get_feed_link('as1_json').'" />'."\n";
-    echo '<link rel="alternate" type="application/stream+xml" href="'.get_feed_link('atom').'" />'."\n";
+?>
+<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s Activity-Streams Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension') ) ); ?>" href="<?php echo get_feed_link('as1'); ?>" />
+<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s Activity-Streams Comments Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension') ) ); ?>" href="<?php echo get_feed_link('comments_as1'); ?>" />
+<?php
+if (is_singular()) {
+  $id = 0;
+  $post = get_post( $id );
+
+  if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
+?>
+<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s %3$s Activity-Streams Comments Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension'), esc_html( get_the_title() ) ) ); ?>" href="<?php echo get_post_comments_feed_link(null, "as1"); ?>" />
+<?php } } ?>
+<link rel="alternate" type="<?php echo feed_content_type("atom"); ?>" title="" href="<?php echo get_feed_link('atom'); ?>" />
+<?php
   }
 
   /**
@@ -125,12 +154,12 @@ class ActivityExtension {
   /**
    * adds a json feed
    */
-  public static function do_feed_as1() {
-    if (is_comment_feed()) {
-      // load template
+  public static function do_feed_as1( $for_comments ) {
+    if ( $for_comments ) {
+      // load comment template
       load_template(dirname(__FILE__) . '/feed-as1-comments.php');
     } else {
-      // load template
+      // load post template
       load_template(dirname(__FILE__) . '/feed-as1.php');
     }
   }
@@ -153,7 +182,7 @@ class ActivityExtension {
     <link rel='alternate' type='text/html' href='<?php echo get_author_posts_url( get_the_author_meta( "ID" ) ); ?>' />
 <?php
   }
-  
+
   /**
    * returns the activity object for a given post
    *
