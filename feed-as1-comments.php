@@ -113,7 +113,7 @@ while( have_comments() ) {
  *
  * @param object $json The JSON data object
  */
-$json = apply_filters( 'as1_feed', $json );
+$json = apply_filters( 'comments_as1_feed', $json );
 
 if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
   // json_encode() options added in PHP 5.3
