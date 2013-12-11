@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
 Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
 Author: Matthias Pfefferle
 Author URI: http://notizblog.org
-Version: 1.0.0-dev
+Version: 1.0.0
 */
 
 add_action('atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
