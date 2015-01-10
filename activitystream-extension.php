@@ -8,38 +8,42 @@ Author URI: http://notizblog.org
 Version: 1.0.0
 */
 
-add_action('atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
-add_action('atom_entry', array('ActivityExtension', 'add_atom_activity_object'));
-add_action('atom_author', array('ActivityExtension', 'add_atom_activity_author')); // run before output
-add_action('comment_atom_ns', array('ActivityExtension', 'add_atom_activity_namespace'));
-add_action('comment_atom_entry', array('ActivityExtension', 'add_comment_atom_activity_object'));
-add_action('wp_head', array('ActivityExtension', 'add_html_header'), 5);
-add_filter('query_vars', array('ActivityExtension', 'query_vars'));
-add_filter('feed_content_type', array('ActivityExtension', 'feed_content_type'), 10, 2);
+add_action('atom_ns', array('ActivityStreamExtensionPlugin', 'add_atom_activity_namespace'));
+add_action('atom_entry', array('ActivityStreamExtensionPlugin', 'add_atom_activity_object'));
+add_action('atom_author', array('ActivityStreamExtensionPlugin', 'add_atom_activity_author')); // run before output
+add_action('comment_atom_ns', array('ActivityStreamExtensionPlugin', 'add_atom_activity_namespace'));
+add_action('comment_atom_entry', array('ActivityStreamExtensionPlugin', 'add_comment_atom_activity_object'));
+add_action('wp_head', array('ActivityStreamExtensionPlugin', 'add_html_header'), 5);
+add_filter('query_vars', array('ActivityStreamExtensionPlugin', 'query_vars'));
+add_filter('feed_content_type', array('ActivityStreamExtensionPlugin', 'feed_content_type'), 10, 2);
 
 // add 'json' as feed
-add_action('do_feed_as1', array('ActivityExtension', 'do_feed_as1'), 10, 1);
-add_action('init', array('ActivityExtension', 'init'));
-add_filter('as1_object_type', array('ActivityExtension', 'post_object_type'), 10, 2);
+add_action('do_feed_as1', array('ActivityStreamExtensionPlugin', 'do_feed_as1'), 10, 1);
+add_action('init', array('ActivityStreamExtensionPlugin', 'init'));
+add_filter('as1_object_type', array('ActivityStreamExtensionPlugin', 'post_as1_object_type'), 10, 2);
+add_filter('as2_object_type', array('ActivityStreamExtensionPlugin', 'post_as2_object_type'), 10, 2);
 
 // push json feed
-add_filter('pshb_feed_urls', array('ActivityExtension', 'publish_to_hub'));
+add_filter('pshb_feed_urls', array('ActivityStreamExtensionPlugin', 'publish_to_hub'));
 
-register_activation_hook(__FILE__, array('ActivityExtension', 'flush_rewrite_rules'));
-register_deactivation_hook(__FILE__, array('ActivityExtension', 'flush_rewrite_rules'));
+register_activation_hook(__FILE__, array('ActivityStreamExtensionPlugin', 'flush_rewrite_rules'));
+register_deactivation_hook(__FILE__, array('ActivityStreamExtensionPlugin', 'flush_rewrite_rules'));
 
 /**
  * ActivityStream Extension
  *
  * @author Matthias Pfefferle
  */
-class ActivityExtension {
+class ActivityStreamExtensionPlugin {
   /**
    * init function
    */
   public static function init() {
     // add the as1 feed
-    add_feed('as1', array('ActivityExtension', 'do_feed_as1'));
+    add_feed('as1', array('ActivityStreamExtensionPlugin', 'do_feed_as1'));
+
+    // add the as2 feed
+    add_feed('as2', array('ActivityStreamExtensionPlugin', 'do_feed_as2'));
   }
 
   /**
@@ -66,6 +70,10 @@ class ActivityExtension {
   public static function feed_content_type($content_type, $type) {
     if ($type == "as1") {
       return 'application/stream+json';
+    }
+
+    if ($type == "as2") {
+      return 'application/activity+json';
     }
 
     return $content_type;
@@ -155,7 +163,7 @@ class ActivityExtension {
   }
 
   /**
-   * adds a json feed
+   * adds an as1 json feed
    */
   public static function do_feed_as1( $for_comments ) {
     if ( $for_comments ) {
@@ -168,6 +176,14 @@ class ActivityExtension {
   }
 
   /**
+   * adds an as2 json feed
+   */
+  public static function do_feed_as2( $for_comments ) {
+    // load post template
+    load_template(dirname(__FILE__) . '/feed-as2.php');
+  }
+
+  /**
    * adds the json feed to PubsubHubBub
    *
    * @param array $feeds
@@ -175,10 +191,15 @@ class ActivityExtension {
    */
   public static function publish_to_hub($feeds) {
     $feeds[] = get_feed_link('as1');
+    $feeds[] = get_feed_link('as2');
 
     return $feeds;
   }
 
+  /**
+   *
+   *
+   */
   public static function add_atom_activity_author() {
 ?>
     <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
@@ -187,13 +208,13 @@ class ActivityExtension {
   }
 
   /**
-   * returns the activity object for a given post
+   * returns the as1 object for a given post
    *
    * @param string $type the object type
    * @param Object $post the post object
    * @return string the object type
    */
-  public static function post_object_type($type, $post) {
+  public static function post_as1_object_type($type, $post) {
     $post_type = get_post_type($post);
     switch ( $post_type ) {
       case "post":
@@ -245,5 +266,18 @@ class ActivityExtension {
     }
 
     return $object_type;
+  }
+
+  /**
+  * returns the as2 object for a given post
+  *
+  * @param string $type the object type
+  * @param Object $post the post object
+  * @return string the object type
+  */
+  public static function post_as2_object_type($type, $post) {
+    $object_type = self::post_as1_object_type($type, $post);
+
+    return ucfirst($object_type);
   }
 }
