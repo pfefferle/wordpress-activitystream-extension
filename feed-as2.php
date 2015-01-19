@@ -34,9 +34,10 @@ while( have_posts() ) {
     "provider" => get_feed_link( "as2" ),
     "target" => (object)array(
       "@id" => get_bloginfo( "url" ),
-      "@type" => "Page",
+      "@type" => "http://schema.org/Blog",
       "url" => get_bloginfo( "url" ),
-      "displayName" => get_bloginfo( "name" )
+      "name" => get_bloginfo( "name" ),
+      "description" => get_bloginfo( "description" )
     ),
     "object" => (object)array(
       "@id" => get_the_guid(),
