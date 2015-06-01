@@ -70,26 +70,25 @@ while ( have_comments() ) {
 		),
 		'verb' => 'post',
 		'target' => (object)array(
-			'id'	 => get_the_guid( $comment_post->ID ),
-			'displayName'	=> get_the_title( $comment_post->ID ),
+			'id' => get_the_guid( $comment_post->ID ),
+			'displayName' => get_the_title( $comment_post->ID ),
 			'objectType' => $object_type,
-			'summary'	=> get_the_excerpt(),
-			'url'	=> get_permalink( $comment_post->ID )
+			'summary' => get_the_excerpt(),
+			'url' => get_permalink( $comment_post->ID )
 		),
 		'object' => (object)array(
-			'id'	 => get_comment_guid(),
+			'id' => get_comment_guid(),
 			'objectType' => $comment_object_type,
-			'content'	=> get_comment_text(),
-			'url'	=> get_comment_link(),
+			'content' => get_comment_text(),
+			'url' => get_comment_link(),
 		),
 		'actor' => (object)array(
 			'displayName' => get_comment_author(),
-			'objectType'  => 'person',
-			'image'   => (object)array(
+			'objectType' => 'person',
+			'image' => (object)array(
 				'width'  => 96,
 				'height' => 96,
-				// TODO: get_avatar_url()
-				'url'  => 'http://www.gravatar.com/avatar/' . md5( get_comment_author_email() ) . '.png?s=96'
+				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) )
 			)
 		)
 	);

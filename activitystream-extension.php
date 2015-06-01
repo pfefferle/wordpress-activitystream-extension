@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: ActivityStream extension
-Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
-Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
-Author: Matthias Pfefferle
-Author URI: http://notizblog.org
-Version: 1.0.0
+ Plugin Name: ActivityStream extension
+ Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
+ Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
+ Author: Matthias Pfefferle
+ Author URI: http://notizblog.org
+ Version: 1.1.0-dev
 */
 
 add_action( 'init', array( 'ActivityStreamExtensionPlugin', 'init' ) );
@@ -21,8 +21,8 @@ register_deactivation_hook( __FILE__, array( 'ActivityStreamExtensionPlugin', 'f
 class ActivityStreamExtensionPlugin {
 
 	/**
-	* init function
-	*/
+	 * init function
+	 */
 	public static function init() {
 		add_filter( 'query_vars', array( 'ActivityStreamExtensionPlugin', 'query_vars' ) );
 		add_action( 'wp_head', array( 'ActivityStreamExtensionPlugin', 'add_html_header' ), 5 );

@@ -83,8 +83,7 @@ while ( have_posts() ) {
 			'image' => (object)array(
 				'width' => 96,
 				'height' => 96,
-				// TODO: get_avatar_url()
-				'url'  => 'http://www.gravatar.com/avatar/' . md5( get_the_author_meta( 'email' ) ) . '.png?s=96'
+				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) )
 			)
 		)
 	);
