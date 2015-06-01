@@ -8,26 +8,10 @@ Author URI: http://notizblog.org
 Version: 1.0.0
 */
 
-add_action('atom_ns', array('ActivityStreamExtensionPlugin', 'add_atom_activity_namespace'));
-add_action('atom_entry', array('ActivityStreamExtensionPlugin', 'add_atom_activity_object'));
-add_action('atom_author', array('ActivityStreamExtensionPlugin', 'add_atom_activity_author')); // run before output
-add_action('comment_atom_ns', array('ActivityStreamExtensionPlugin', 'add_atom_activity_namespace'));
-add_action('comment_atom_entry', array('ActivityStreamExtensionPlugin', 'add_comment_atom_activity_object'));
-add_action('wp_head', array('ActivityStreamExtensionPlugin', 'add_html_header'), 5);
-add_filter('query_vars', array('ActivityStreamExtensionPlugin', 'query_vars'));
-add_filter('feed_content_type', array('ActivityStreamExtensionPlugin', 'feed_content_type'), 10, 2);
+add_action( 'init', array( 'ActivityStreamExtensionPlugin', 'init' ) );
 
-// add 'json' as feed
-add_action('do_feed_as1', array('ActivityStreamExtensionPlugin', 'do_feed_as1'), 10, 1);
-add_action('init', array('ActivityStreamExtensionPlugin', 'init'));
-add_filter('as1_object_type', array('ActivityStreamExtensionPlugin', 'post_as1_object_type'), 10, 2);
-add_filter('as2_object_type', array('ActivityStreamExtensionPlugin', 'post_as2_object_type'), 10, 2);
-
-// push json feed
-add_filter('pshb_feed_urls', array('ActivityStreamExtensionPlugin', 'publish_to_hub'));
-
-register_activation_hook(__FILE__, array('ActivityStreamExtensionPlugin', 'flush_rewrite_rules'));
-register_deactivation_hook(__FILE__, array('ActivityStreamExtensionPlugin', 'flush_rewrite_rules'));
+register_activation_hook( __FILE__, array( 'ActivityStreamExtensionPlugin', 'flush_rewrite_rules' ) );
+register_deactivation_hook( __FILE__, array( 'ActivityStreamExtensionPlugin', 'flush_rewrite_rules' ) );
 
 /**
  * ActivityStream Extension
@@ -35,249 +19,269 @@ register_deactivation_hook(__FILE__, array('ActivityStreamExtensionPlugin', 'flu
  * @author Matthias Pfefferle
  */
 class ActivityStreamExtensionPlugin {
-  /**
-   * init function
-   */
-  public static function init() {
-    // add the as1 feed
-    add_feed('as1', array('ActivityStreamExtensionPlugin', 'do_feed_as1'));
 
-    // add the as2 feed
-    add_feed('as2', array('ActivityStreamExtensionPlugin', 'do_feed_as2'));
-  }
+	/**
+	* init function
+	*/
+	public static function init() {
+		add_filter( 'query_vars', array( 'ActivityStreamExtensionPlugin', 'query_vars' ) );
+		add_action( 'wp_head', array( 'ActivityStreamExtensionPlugin', 'add_html_header' ), 5 );
+		add_filter( 'feed_content_type', array( 'ActivityStreamExtensionPlugin', 'feed_content_type' ), 10, 2 );
 
-  /**
-   * add 'callback' as a valid query variables.
-   *
-   * @param array $vars
-   * @return array
-   */
-  public static function query_vars($vars) {
-    $vars[] = 'callback';
-    $vars[] = 'feed';
-    $vars[] = 'pretty';
+		// add the as1 feed
+		add_feed( 'as1', array( 'ActivityStreamExtensionPlugin', 'do_feed_as1' ) );
+		add_action( 'do_feed_as1', array( 'ActivityStreamExtensionPlugin', 'do_feed_as1' ), 10, 1 );
+		add_filter( 'as1_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as1_object_type'), 10, 2 );
 
-    return $vars;
-  }
+		// add the as2 feed
+		add_feed( 'as2', array( 'ActivityStreamExtensionPlugin', 'do_feed_as2' ) );
+		add_filter( 'as2_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as2_object_type'), 10, 2 );
 
-  /**
-   * adds "as1" content-type
-   *
-   * @param string $content_type the default content-type
-   * @param string $type the feed-type
-   * @return string the as1 content-type
-   */
-  public static function feed_content_type($content_type, $type) {
-    if ($type == "as1") {
-      return 'application/stream+json';
-    }
+		// push json feed
+		add_filter( 'pshb_feed_urls', array( 'ActivityStreamExtensionPlugin', 'publish_to_hub' ) );
 
-    if ($type == "as2") {
-      return 'application/activity+json';
-    }
+		// extend core feeds with AS1
+		add_action( 'atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
+		add_action( 'atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_object' ) );
+		add_action( 'atom_author', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_author' ) ); // run before output
+		add_action( 'comment_atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
+		add_action( 'comment_atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_comment_atom_activity_object' ) );
+	}
 
-    return $content_type;
-  }
+	/**
+	 * add 'callback' as a valid query variables.
+	 *
+	 * @param array $vars
+	 * @return array
+	 */
+	public static function query_vars( $vars ) {
+		$vars[] = 'callback';
+		$vars[] = 'feed';
+		$vars[] = 'pretty';
 
-  /**
-   * reset rewrite rules
-   */
-  public static function flush_rewrite_rules() {
-    global $wp_rewrite;
-    $wp_rewrite->flush_rules();
-  }
+		return $vars;
+	}
 
-  /**
-   * echos autodiscovery links
-   */
-  public static function add_html_header() {
-  	// check if theme author want to display feed links
-    if ( !current_theme_supports('automatic-feed-links') )
-  		return;
+	/**
+	 * adds "as1" content-type
+	 *
+	 * @param string $content_type the default content-type
+	 * @param string $type the feed-type
+	 * @return string the as1 content-type
+	 */
+	public static function feed_content_type( $content_type, $type ) {
+		if ( 'as1' == $type ) {
+			return 'application/stream+json';
+		}
+
+		if ( 'as2' == $type ) {
+			return 'application/activity+json';
+		}
+
+		return $content_type;
+	}
+
+	/**
+	 * reset rewrite rules
+	 */
+	public static function flush_rewrite_rules() {
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
+	}
+
+	/**
+	 * echos autodiscovery links
+	 */
+	public static function add_html_header() {
+		// check if theme author want to display feed links
+		if ( ! current_theme_supports( 'automatic-feed-links' ) ) {
+			return;
+		}
+		?>
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Feed', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
+		<?php
+		if ( is_singular() ) {
+			$id = 0;
+			$post = get_post( $id );
+
+			if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
+		?>
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
+		<?php
+			}
+		}
+	}
+
+	/**
+	 * echos the activitystream namespace
+	 */
+	public static function add_atom_activity_namespace() {
+		echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'."\n";
+	}
+
+	/**
+	 * echos the activity verb and object for the wordpress entries
+	 */
+	public static function add_atom_activity_object() {
+		/*
+		 * The object type of the current post in the Activity Streams 1 feed
+		 *
+		 * @param Object $comment_post The current post
+		 */
+		$object_type = apply_filters( 'as1_object_type', 'article', get_post() );
 ?>
-<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s Activity-Streams Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension') ) ); ?>" href="<?php echo get_feed_link('as1'); ?>" />
-<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s Activity-Streams Comments Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension') ) ); ?>" href="<?php echo get_feed_link('comments_as1'); ?>" />
+<activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+<activity:object>
+	<activity:object-type>http://activitystrea.ms/schema/1.0/<?php echo esc_attr( $object_type ); ?></activity:object-type>
+	<id><?php the_guid(); ?></id>
+	<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
+	<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
+	<link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
+</activity:object>
 <?php
-    if (is_singular()) {
-      $id = 0;
-      $post = get_post( $id );
+	}
 
-      if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
+	/**
+	 * echos the activity verb and object for the wordpress comments
+	 */
+	public static function add_comment_atom_activity_object() {
 ?>
-<link rel="alternate" type="<?php echo feed_content_type("as1"); ?>" title="<?php echo esc_attr( sprintf( __('%1$s %2$s %3$s Activity-Streams Comments Feed', 'activity-extension'), get_bloginfo('name'), __('&raquo;', 'activity-extension'), esc_html( get_the_title() ) ) ); ?>" href="<?php echo get_post_comments_feed_link(null, "as1"); ?>" />
+<activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
+<activity:object>
+	<activity:object-type>http://activitystrea.ms/schema/1.0/comment</activity:object-type>
+	<id><?php comment_guid(); ?></id>
+	<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php comment_text(); ?>]]></content>
+	<link rel="alternate" href="<?php comment_link(); ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
+	<thr:in-reply-to ref="<?php the_guid() ?>" href="<?php the_permalink_rss() ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
+</activity:object>
+<activity:target>
+	<activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
+	<id><?php the_guid(); ?></id>
+	<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
+	<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
+	<link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
+</activity:target>
 <?php
-      }
-    }
-  }
+	}
 
-  /**
-   * echos the activitystream namespace
-   */
-  public static function add_atom_activity_namespace() {
-    echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'."\n";
-  }
+	/**
+	 * adds an as1 json feed
+	 */
+	public static function do_feed_as1( $for_comments ) {
+		if ( $for_comments ) {
+			// load comment template
+			load_template( dirname( __FILE__ ) . '/feed-as1-comments.php' );
+		} else {
+			// load post template
+			load_template( dirname( __FILE__ ) . '/feed-as1.php' );
+		}
+	}
 
-  /**
-   * echos the activity verb and object for the wordpress entries
-   */
-  public static function add_atom_activity_object() {
-    /*
-     * The object type of the current post in the Activity Streams 1 feed
-     *
-     * @param Object $comment_post The current post
-     */
-    $object_type = apply_filters( 'as1_object_type', 'article', get_post() );
+	/**
+	 * adds an as2 json feed
+	 */
+	public static function do_feed_as2( $for_comments ) {
+		// load post template
+		load_template( dirname( __FILE__ ) . '/feed-as2.php' );
+	}
+
+	/**
+	 * adds the json feed to PubsubHubBub
+	 *
+	 * @param array $feeds
+	 * @return array
+	 */
+	public static function publish_to_hub( $feeds ) {
+		$feeds[] = get_feed_link( 'as1' );
+		$feeds[] = get_feed_link( 'as2' );
+
+		return $feeds;
+	}
+
+	/**
+	 * add author informations to the Atom feed
+	 */
+	public static function add_atom_activity_author() {
 ?>
-    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
-    <activity:object>
-      <activity:object-type>http://activitystrea.ms/schema/1.0/<?php echo $object_type; ?></activity:object-type>
-      <id><?php the_guid(); ?></id>
-      <title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
-      <summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
-      <link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
-    </activity:object>
+<activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+<link rel="alternate" type="text/html" href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" />
 <?php
-  }
+	}
 
-  /**
-   * echos the activity verb and object for the wordpress comments
-   */
-  public static function add_comment_atom_activity_object() {
-?>
-    <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
-    <activity:object>
-      <activity:object-type>http://activitystrea.ms/schema/1.0/comment</activity:object-type>
-      <id><?php comment_guid(); ?></id>
-      <content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php comment_text(); ?>]]></content>
-      <link rel="alternate" href="<?php comment_link(); ?>" type="<?php bloginfo_rss('html_type'); ?>" />
-      <thr:in-reply-to ref="<?php the_guid() ?>" href="<?php the_permalink_rss() ?>" type="<?php bloginfo_rss('html_type'); ?>" />
-    </activity:object>
-    <activity:target>
-      <activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
-      <id><?php the_guid(); ?></id>
-      <title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
-      <summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
-      <link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
-    </activity:target>
-<?php
-  }
+	/**
+	 * returns the as1 object for a given post
+	 *
+	 * @param string $type the object type
+	 * @param Object $post the post object
+	 * @return string the object type
+	 */
+	public static function post_as1_object_type( $type, $post ) {
+		$post_type = get_post_type( $post );
 
-  /**
-   * adds an as1 json feed
-   */
-  public static function do_feed_as1( $for_comments ) {
-    if ( $for_comments ) {
-      // load comment template
-      load_template(dirname(__FILE__) . '/feed-as1-comments.php');
-    } else {
-      // load post template
-      load_template(dirname(__FILE__) . '/feed-as1.php');
-    }
-  }
+		switch ( $post_type ) {
+			case 'post':
+				$post_format = get_post_format( $post );
 
-  /**
-   * adds an as2 json feed
-   */
-  public static function do_feed_as2( $for_comments ) {
-    // load post template
-    load_template(dirname(__FILE__) . '/feed-as2.php');
-  }
+				switch ( $post_format ) {
+					case 'aside':
+					case 'status':
+					case 'quote':
+					case 'note':
+						$object_type = 'note';
+						break;
+					case 'gallery':
+					case 'image':
+						$object_type = 'image';
+						break;
+					case 'video':
+						$object_type = 'video';
+						break;
+					case 'audio':
+						$object_type = 'audio';
+						break;
+					default:
+						$object_type = 'article';
+						break;
+				}
+				break;
+			case 'page':
+				$object_type = 'page';
+				break;
+			case 'attachment':
+				$mime_type = get_post_mime_type();
+				$media_type = preg_replace( '/(\/[a-zA-Z]+)/i', '', $mime_type );
 
-  /**
-   * adds the json feed to PubsubHubBub
-   *
-   * @param array $feeds
-   * @return array
-   */
-  public static function publish_to_hub($feeds) {
-    $feeds[] = get_feed_link('as1');
-    $feeds[] = get_feed_link('as2');
+				switch ( $media_type ) {
+					case 'audio':
+						$object_type = 'audio';
+						break;
+					case 'video':
+						$object_type = 'video';
+						break;
+					case 'image':
+						$object_type = 'image';
+						break;
+				}
+				break;
+			default:
+				$object_type = 'article';
+				break;
+		}
 
-    return $feeds;
-  }
+		return $object_type;
+	}
 
-  /**
-   *
-   *
-   */
-  public static function add_atom_activity_author() {
-?>
-    <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
-    <link rel='alternate' type='text/html' href='<?php echo get_author_posts_url( get_the_author_meta( "ID" ) ); ?>' />
-<?php
-  }
+	/**
+	 * returns the as2 object for a given post
+	 *
+	 * @param string $type the object type
+	 * @param Object $post the post object
+	 * @return string the object type
+	 */
+	public static function post_as2_object_type( $type, $post ) {
+		$object_type = self::post_as1_object_type( $type, $post );
 
-  /**
-   * returns the as1 object for a given post
-   *
-   * @param string $type the object type
-   * @param Object $post the post object
-   * @return string the object type
-   */
-  public static function post_as1_object_type($type, $post) {
-    $post_type = get_post_type($post);
-    switch ( $post_type ) {
-      case "post":
-        $post_format = get_post_format($post);
-        switch ( $post_format ) {
-          case "aside":
-          case "status":
-          case "quote":
-          case "note":
-            $object_type = "note";
-            break;
-          case "gallery":
-          case "image":
-            $object_type = "image";
-            break;
-          case "video":
-            $object_type = "video";
-            break;
-          case "audio":
-            $object_type = "audio";
-            break;
-          default:
-            $object_type = "article";
-            break;
-        }
-        break;
-      case "page":
-        $object_type = "page";
-        break;
-      case "attachment":
-        $mime_type = get_post_mime_type();
-        $media_type = preg_replace("/(\/[a-zA-Z]+)/i", "", $mime_type);
-
-        switch ($media_type) {
-          case 'audio':
-            $object_type = "audio";
-            break;
-          case 'video':
-            $object_type = "video";
-            break;
-          case 'image':
-            $object_type = "image";
-            break;
-        }
-        break;
-      default:
-        $object_type = "article";
-        break;
-    }
-
-    return $object_type;
-  }
-
-  /**
-  * returns the as2 object for a given post
-  *
-  * @param string $type the object type
-  * @param Object $post the post object
-  * @return string the object type
-  */
-  public static function post_as2_object_type($type, $post) {
-    $object_type = self::post_as1_object_type($type, $post);
-
-    return ucfirst($object_type);
-  }
+		return ucfirst( $object_type );
+	}
 }
