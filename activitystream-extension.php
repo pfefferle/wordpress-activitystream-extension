@@ -6,6 +6,7 @@
  Author: Matthias Pfefferle
  Author URI: http://notizblog.org
  Version: 1.1.0-dev
+ Text Domain: activitystram-extension
 */
 
 add_action( 'init', array( 'ActivityStreamExtensionPlugin', 'init' ) );
@@ -98,8 +99,8 @@ class ActivityStreamExtensionPlugin {
 			return;
 		}
 		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Feed', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'as1' ) ); ?>" />
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Feed', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
 		<?php
 		if ( is_singular() ) {
 			$id = 0;
@@ -107,7 +108,7 @@ class ActivityStreamExtensionPlugin {
 
 			if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
 		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activity-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activity-extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
 		<?php
 			}
 		}
