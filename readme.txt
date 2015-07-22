@@ -26,6 +26,9 @@ Thats it
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
 
+= 1.1.0 =
+* initial AS2 feed (beta)
+
 = 1.0.0 =
 * changes based on the 7B plugin <https://github.com/pento/7B>
 * json-feed for comments
