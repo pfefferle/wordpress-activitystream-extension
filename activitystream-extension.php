@@ -1,7 +1,7 @@
 <?php
 /*
  Plugin Name: ActivityStream extension
- Plugin URI: http://wordpress.org/extend/plugins/activitystream-extension/
+ Plugin URI: http://wordpress.org/plugins/activitystream-extension/
  Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  Author: Matthias Pfefferle
  Author URI: http://notizblog.org
