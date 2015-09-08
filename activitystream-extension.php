@@ -32,11 +32,12 @@ class ActivityStreamExtensionPlugin {
 		// add the as1 feed
 		add_feed( 'as1', array( 'ActivityStreamExtensionPlugin', 'do_feed_as1' ) );
 		add_action( 'do_feed_as1', array( 'ActivityStreamExtensionPlugin', 'do_feed_as1' ), 10, 1 );
-		add_filter( 'as1_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as1_object_type'), 10, 2 );
+		add_filter( 'as1_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as1_object_type' ), 10, 2 );
 
 		// add the as2 feed
 		add_feed( 'as2', array( 'ActivityStreamExtensionPlugin', 'do_feed_as2' ) );
-		add_filter( 'as2_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as2_object_type'), 10, 2 );
+		add_action( 'do_feed_as2', array( 'ActivityStreamExtensionPlugin', 'do_feed_as2' ), 10, 1 );
+		add_filter( 'as2_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as2_object_type' ), 10, 2 );
 
 		// push json feed
 		add_filter( 'pshb_feed_urls', array( 'ActivityStreamExtensionPlugin', 'publish_to_hub' ) );
