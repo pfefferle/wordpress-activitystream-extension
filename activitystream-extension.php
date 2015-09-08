@@ -282,8 +282,58 @@ class ActivityStreamExtensionPlugin {
 	 * @return string the object type
 	 */
 	public static function post_as2_object_type( $type, $post ) {
-		$object_type = self::post_as1_object_type( $type, $post );
+		$post_type = get_post_type( $post );
 
-		return ucfirst( $object_type );
+		switch ( $post_type ) {
+			case 'post':
+				$post_format = get_post_format( $post );
+
+				switch ( $post_format ) {
+					case 'aside':
+					case 'status':
+					case 'quote':
+					case 'note':
+						$object_type = 'Note';
+						break;
+					case 'gallery':
+					case 'image':
+						$object_type = 'Image';
+						break;
+					case 'video':
+						$object_type = 'Video';
+						break;
+					case 'audio':
+						$object_type = 'Audio';
+						break;
+					default:
+						$object_type = 'Article';
+						break;
+				}
+				break;
+			case 'page':
+				$object_type = 'Page';
+				break;
+			case 'attachment':
+				$mime_type = get_post_mime_type();
+				$media_type = preg_replace( '/(\/[a-zA-Z]+)/i', '', $mime_type );
+
+				switch ( $media_type ) {
+					case 'audio':
+						$object_type = 'Audio';
+						break;
+					case 'video':
+						$object_type = 'Video';
+						break;
+					case 'image':
+						$object_type = 'Image';
+						break;
+				}
+				break;
+			default:
+				$object_type = 'Article';
+				break;
+		}
+
+		return $object_type;
 	}
 }
