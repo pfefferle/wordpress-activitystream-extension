@@ -1,12 +1,12 @@
 === ActivityStream extension ===
 Contributors: pfefferle
 Donate link: http://14101978.de
-Tags: ActivityStreams, Activity Stream, feed, RSS, Atom, JSON
+Tags: ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD
 Requires at least: 4.2
-Tested up to: 4.2.2
-Stable tag: 1.0.0
+Tested up to: 4.3.1
+Stable tag: 1.1.0
 
-ActivityStrea.ms feeds for WordPress (Atom and JSON)
+ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
 == Description ==
 
@@ -28,6 +28,7 @@ Project maintined on github at
 
 = 1.1.0 =
 * initial AS2 feed (beta)
+* WordPress coding standard
 
 = 1.0.0 =
 * changes based on the 7B plugin <https://github.com/pento/7B>
