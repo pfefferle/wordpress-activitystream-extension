@@ -32,33 +32,33 @@ while ( have_posts() ) {
 		'published' => get_post_modified_time( 'Y-m-d\TH:i:s\Z', true ),
 		'generator' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		'provider' => get_feed_link( 'as2' ),
-		'target' => (object)array(
+		'target' => (object) array(
 			'@id' => get_bloginfo( 'url' ),
 			'@type' => 'http://schema.org/Blog',
 			'url' => get_bloginfo( 'url' ),
 			'name' => get_bloginfo( 'name' ),
-			'description' => get_bloginfo( 'description' )
+			'description' => get_bloginfo( 'description' ),
 		),
-		'object' => (object)array(
+		'object' => (object) array(
 			'@id' => get_the_guid(),
 			'@type' => $object_type,
 			'displayName' => get_the_title(),
 			'summary' => get_the_excerpt(),
 			'url' => get_permalink(),
-			'content' => get_the_content()
+			'content' => get_the_content(),
 		),
-		'actor' => (object)array(
+		'actor' => (object) array(
 			'@id' => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
 			'@type' => 'Person',
 			'displayName' => get_the_author(),
 			'url' => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
-			'image' => (object)array(
+			'image' => (object) array(
 				'@type' => 'Link',
 				'width'  => 96,
 				'height' => 96,
-				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) )
-			)
-		)
+				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+			),
+		),
 	);
 
 	/*

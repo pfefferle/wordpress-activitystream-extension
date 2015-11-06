@@ -44,7 +44,7 @@ do_action( 'comments_as1_feed_pre' );
 while ( have_comments() ) {
 	the_comment();
 
-	//$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
+	$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
 
 	/*
 	 * The object type of the current post in the Activity Streams 1 feed
@@ -62,35 +62,36 @@ while ( have_comments() ) {
 
 	$item = array(
 		'published' => get_comment_time( 'Y-m-d\TH:i:s\Z', true ),
-		'generator' => (object)array(
-			'url' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' )
+		'generator' => (object) array(
+			'url' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		),
-		'provider' => (object)array(
-			'url' => get_post_comments_feed_link( $comment_post->ID, 'as1' )
+		'provider' => (object) array(
+			'url' => get_post_comments_feed_link( $comment_post->ID, 'as1' ),
 		),
 		'verb' => 'post',
-		'target' => (object)array(
+		'target' => (object) array(
 			'id' => get_the_guid( $comment_post->ID ),
 			'displayName' => get_the_title( $comment_post->ID ),
 			'objectType' => $object_type,
 			'summary' => get_the_excerpt(),
-			'url' => get_permalink( $comment_post->ID )
+			'url' => get_permalink( $comment_post->ID ),
 		),
-		'object' => (object)array(
+		'object' => (object) array(
 			'id' => get_comment_guid(),
 			'objectType' => $comment_object_type,
 			'content' => get_comment_text(),
 			'url' => get_comment_link(),
 		),
-		'actor' => (object)array(
+		'actor' => (object) array(
 			'displayName' => get_comment_author(),
 			'objectType' => 'person',
-			'image' => (object)array(
+			'url' => get_comment_author_url(),
+			'image' => (object) array(
 				'width'  => 96,
 				'height' => 96,
-				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) )
-			)
-		)
+				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+			),
+		),
 	);
 
 	if ( get_comment_author_url() ) {

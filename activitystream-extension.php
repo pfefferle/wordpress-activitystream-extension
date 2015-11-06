@@ -1,13 +1,15 @@
 <?php
-/*
- Plugin Name: ActivityStream extension
- Plugin URI: http://wordpress.org/plugins/activitystream-extension/
- Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
- Author: Matthias Pfefferle
- Author URI: http://notizblog.org
- Version: 1.1.0-dev
- Text Domain: activitystram-extension
-*/
+/**
+ * Plugin Name: ActivityStream extension
+ * Plugin URI: http://wordpress.org/plugins/activitystream-extension/
+ * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
+ * Author: Matthias Pfefferle
+ * Author URI: http://notizblog.org
+ * Version: 1.1.0
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
+ * Text Domain: activitystram-extension
+ */
 
 add_action( 'init', array( 'ActivityStreamExtensionPlugin', 'init' ) );
 
@@ -22,7 +24,7 @@ register_deactivation_hook( __FILE__, array( 'ActivityStreamExtensionPlugin', 'f
 class ActivityStreamExtensionPlugin {
 
 	/**
-	 * init function
+	 * Init function
 	 */
 	public static function init() {
 		add_filter( 'query_vars', array( 'ActivityStreamExtensionPlugin', 'query_vars' ) );
@@ -51,7 +53,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * add 'callback' as a valid query variables.
+	 * Add 'callback' as a valid query variables.
 	 *
 	 * @param array $vars
 	 * @return array
@@ -65,7 +67,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * adds "as1" content-type
+	 * Adds "as1" content-type
 	 *
 	 * @param string $content_type the default content-type
 	 * @param string $type the feed-type
@@ -84,7 +86,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * reset rewrite rules
+	 * Reset rewrite rules
 	 */
 	public static function flush_rewrite_rules() {
 		global $wp_rewrite;
@@ -92,7 +94,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * echos autodiscovery links
+	 * Echos autodiscovery links
 	 */
 	public static function add_html_header() {
 		// check if theme author want to display feed links
@@ -116,14 +118,14 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * echos the activitystream namespace
+	 * Echos the activitystream namespace
 	 */
 	public static function add_atom_activity_namespace() {
 		echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'."\n";
 	}
 
 	/**
-	 * echos the activity verb and object for the wordpress entries
+	 * Echos the activity verb and object for the wordpress entries
 	 */
 	public static function add_atom_activity_object() {
 		/*
@@ -145,7 +147,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * echos the activity verb and object for the wordpress comments
+	 * Echos the activity verb and object for the wordpress comments
 	 */
 	public static function add_comment_atom_activity_object() {
 ?>
@@ -168,7 +170,16 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * adds an as1 json feed
+	 * Add author informations to the Atom feed
+	 */
+	public static function add_atom_activity_author() {
+?>
+<activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
+<?php
+	}
+
+	/**
+	 * Adds an as1 json feed
 	 */
 	public static function do_feed_as1( $for_comments ) {
 		if ( $for_comments ) {
@@ -181,15 +192,20 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * adds an as2 json feed
+	 * Adds an as2 json feed
 	 */
 	public static function do_feed_as2( $for_comments ) {
-		// load post template
-		load_template( dirname( __FILE__ ) . '/feed-as2.php' );
+		if ( $for_comments ) {
+			// load comment template
+			load_template( dirname( __FILE__ ) . '/feed-as2-comments.php' );
+		} else {
+			// load post template
+			load_template( dirname( __FILE__ ) . '/feed-as2.php' );
+		}
 	}
 
 	/**
-	 * adds the json feed to PubsubHubBub
+	 * Adds the json feed to PubsubHubBub
 	 *
 	 * @param array $feeds
 	 * @return array
@@ -202,17 +218,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * add author informations to the Atom feed
-	 */
-	public static function add_atom_activity_author() {
-?>
-<activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
-<link rel="alternate" type="text/html" href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" />
-<?php
-	}
-
-	/**
-	 * returns the as1 object for a given post
+	 * Returns the as1 object for a given post
 	 *
 	 * @param string $type the object type
 	 * @param Object $post the post object
@@ -275,7 +281,7 @@ class ActivityStreamExtensionPlugin {
 	}
 
 	/**
-	 * returns the as2 object for a given post
+	 * Returns the as2 object for a given post
 	 *
 	 * @param string $type the object type
 	 * @param Object $post the post object
