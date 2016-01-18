@@ -184,10 +184,10 @@ class ActivityStreamExtensionPlugin {
 	public static function do_feed_as1( $for_comments ) {
 		if ( $for_comments ) {
 			// load comment template
-			load_template( dirname( __FILE__ ) . '/feed-as1-comments.php' );
+			load_template( dirname( __FILE__ ) . '/templates/feed-as1-comments.php' );
 		} else {
 			// load post template
-			load_template( dirname( __FILE__ ) . '/feed-as1.php' );
+			load_template( dirname( __FILE__ ) . '/templates/feed-as1.php' );
 		}
 	}
 
@@ -197,10 +197,10 @@ class ActivityStreamExtensionPlugin {
 	public static function do_feed_as2( $for_comments ) {
 		if ( $for_comments ) {
 			// load comment template
-			load_template( dirname( __FILE__ ) . '/feed-as2-comments.php' );
+			load_template( dirname( __FILE__ ) . '/templates/feed-as2-comments.php' );
 		} else {
 			// load post template
-			load_template( dirname( __FILE__ ) . '/feed-as2.php' );
+			load_template( dirname( __FILE__ ) . '/templates/feed-as2.php' );
 		}
 	}
 
