@@ -6,8 +6,16 @@
 $json = new stdClass();
 
 $json->{'@context'} = 'http://www.w3.org/ns/activitystreams';
-$json->{'@type'} = 'Collection';
-$json->totalItems = get_option( 'posts_per_rss' );
+$json->type = 'Collection';
+if ( is_singular() ) {
+	$json->id = get_post_comments_feed_link( get_the_ID(), 'as2' );
+	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystram-extension' ), get_the_title() ) );
+} else {
+	$json->id = get_feed_link( 'comments_as2' );
+	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystram-extension' ), get_bloginfo( 'name' ) ) );
+}
+
+$json->totalItems = (int) get_option( 'posts_per_rss' );
 
 $json->items = array();
 
@@ -65,27 +73,31 @@ while ( have_comments() ) {
 	$item = array(
 		'published' => get_comment_time( 'Y-m-d\TH:i:s\Z', true ),
 		'generator' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
-		'provider' => get_post_comments_feed_link( $comment_post->ID, 'as2' ),
-		'target' => (object) array(
-			'@id' => get_the_guid( $comment_post->ID ),
-			'@type' => $object_type,
-			'displayName' => get_the_title( $comment_post->ID ),
+		'id' => get_post_comments_feed_link( get_the_ID(), 'as2' ),
+		'type' => 'Create',
+		'name' => esc_attr( sprintf( __( '%1$s posted a comment', 'activitystram-extension' ), get_comment_author() ) ),
+		'inReplyTo' => (object) array(
+			'id' => get_the_guid( $comment_post->ID ),
+			'type' => $object_type,
+			'name' => get_the_title( $comment_post->ID ),
 			'summary' => get_the_excerpt(),
 			'url' => get_permalink( $comment_post->ID ),
 		),
 		'object' => (object) array(
-			'@id' => get_comment_guid(),
-			'@type' => $comment_object_type,
+			'id' => get_comment_guid(),
+			'type' => 'Note',
+			'name' => get_comment_text(),
 			'content' => get_comment_text(),
 			'url' => get_comment_link(),
 		),
 		'actor' => (object) array(
-			'displayName' => get_comment_author(),
-			'objectType' => 'Person',
+			'name' => get_comment_author(),
+			'type' => 'Person',
 			'image' => (object) array(
+				'type' => 'Link',
 				'width'  => 96,
 				'height' => 96,
-				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+				'href' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
 			),
 		),
 	);
@@ -93,6 +105,7 @@ while ( have_comments() ) {
 	// check if comment author provided his URL
 	if ( get_comment_author_url() ) {
 		$item['actor']->url = get_comment_author_url();
+		$item['actor']->id = get_comment_author_url();
 	}
 
 	/*

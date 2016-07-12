@@ -5,7 +5,7 @@
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
  * Author URI: http://notizblog.org
- * Version: 1.1.0
+ * Version: 1.2.0
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: activitystram-extension
