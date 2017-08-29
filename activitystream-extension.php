@@ -4,8 +4,8 @@
  * Plugin URI: http://wordpress.org/plugins/activitystream-extension/
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
- * Author URI: http://notizblog.org
- * Version: 1.2.0
+ * Author URI: https://notiz.blog
+ * Version: 1.2.1
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: activitystram-extension

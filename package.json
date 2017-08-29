@@ -1,6 +1,5 @@
 {
   "name": "wordpress-activitystream-extension",
-  "version": "1.2.0",
   "description": "ActivityStrea.ms feeds for WordPress (Atom and JSON)",
   "repository": {
     "type": "git",
