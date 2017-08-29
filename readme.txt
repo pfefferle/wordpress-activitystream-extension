@@ -26,6 +26,9 @@ Thats it
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
 
+= 1.2.1 =
+* removed charset
+
 = 1.2.0 =
 * updated to latest spec: <http://www.w3.org/TR/2016/WD-activitystreams-core-20160712/>
 * fixed comment feed

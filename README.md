@@ -3,8 +3,8 @@
 **Donate link:** http://14101978.de  
 **Tags:** ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD  
 **Requires at least:** 4.2  
-**Tested up to:** 4.4.1  
-**Stable tag:** 1.2.0  
+**Tested up to:** 4.8.1  
+**Stable tag:** 1.2.1  
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
@@ -25,6 +25,9 @@ Thats it
 
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
+
+### 1.2.1 ###
+* removed charset
 
 ### 1.2.0 ###
 * updated to latest spec: <http://www.w3.org/TR/2016/WD-activitystreams-core-20160712/>
