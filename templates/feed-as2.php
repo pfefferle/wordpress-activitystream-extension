@@ -13,7 +13,7 @@ $json->totalItems = (int) get_option( 'posts_per_rss' );
 
 $json->items = array();
 
-header( 'Content-Type: ' . feed_content_type( 'as2' ) . '; charset=' . get_bloginfo( 'charset' ), true );
+header( 'Content-Type: ' . feed_content_type( 'as2' ), true );
 
 /*
  * The JSONP callback function to add to the JSON feed
