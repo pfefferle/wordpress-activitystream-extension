@@ -16,7 +16,7 @@
     "JSON-LD"
   ],
   "author": "Matthias Pfefferle",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/pfefferle/wordpress-activitystream-extension/issues"
   },

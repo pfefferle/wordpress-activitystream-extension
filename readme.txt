@@ -1,10 +1,10 @@
 === ActivityStream extension ===
 Contributors: pfefferle
-Donate link: http://14101978.de
+Donate link: https://notiz.blog/donate/
 Tags: ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD
 Requires at least: 4.2
-Tested up to: 4.8.1
-Stable tag: 1.2.1
+Tested up to: 4.9.2
+Stable tag: 1.2.2
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
