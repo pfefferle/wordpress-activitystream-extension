@@ -26,6 +26,10 @@ Thats it
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
 
+= 1.2.2 =
+* updated requirement
+* fixed licenses
+
 = 1.2.1 =
 * removed charset
 
