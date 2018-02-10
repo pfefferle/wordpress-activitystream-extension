@@ -1,34 +1,50 @@
-# Copyright (C) 2016 Matthias Pfefferle
+# Copyright (C) 2018 Matthias Pfefferle
 # This file is distributed under the MIT.
 msgid ""
 msgstr ""
-"Project-Id-Version: ActivityStream extension 1.2.0\n"
+"Project-Id-Version: ActivityStream extension 1.2.3\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/activitystream-extension\n"
-"POT-Creation-Date: 2016-07-12 19:46:47+00:00\n"
+"POT-Creation-Date: 2018-02-10 20:53:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n 0.5.3\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
 
-#: activitystream-extension.php:105
+#: activitystream-extension.php:109
 msgid "%1$s %2$s Activity-Streams Feed"
 msgstr ""
 
-#: activitystream-extension.php:105 activitystream-extension.php:106
-#: activitystream-extension.php:114
+#: activitystream-extension.php:109 activitystream-extension.php:110
+#: activitystream-extension.php:118
 msgid "&raquo;"
 msgstr ""
 
-#: activitystream-extension.php:106
+#: activitystream-extension.php:110
 msgid "%1$s %2$s Activity-Streams Comments Feed "
 msgstr ""
 
-#: activitystream-extension.php:114
+#: activitystream-extension.php:118
 msgid "%1$s %2$s %3$s Activity-Streams Comments Feed"
+msgstr ""
+
+#: activitystream-extension.php:135 activitystream-extension.php:174
+msgid "Activity-Streams 1.0 Feed"
+msgstr ""
+
+#: activitystream-extension.php:142
+msgid "Activity-Streams 1.0 Comments Feed "
+msgstr ""
+
+#: activitystream-extension.php:149 activitystream-extension.php:181
+msgid "Activity-Streams 2.0 Feed"
+msgstr ""
+
+#: activitystream-extension.php:156
+msgid "Activity-Streams 2.0 Comments Feed "
 msgstr ""
 
 #: templates/feed-as2-comments.php:12 templates/feed-as2-comments.php:15
@@ -66,5 +82,5 @@ msgid "Matthias Pfefferle"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "http://notizblog.org"
+msgid "https://notiz.blog"
 msgstr ""

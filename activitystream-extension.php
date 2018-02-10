@@ -5,7 +5,7 @@
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
  * Author URI: https://notiz.blog
- * Version: 1.2.2
+ * Version: 1.2.3
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: activitystram-extension
@@ -28,7 +28,6 @@ class ActivityStreamExtensionPlugin {
 	 */
 	public static function init() {
 		add_filter( 'query_vars', array( 'ActivityStreamExtensionPlugin', 'query_vars' ) );
-		add_action( 'wp_head', array( 'ActivityStreamExtensionPlugin', 'add_html_header' ), 5 );
 		add_filter( 'feed_content_type', array( 'ActivityStreamExtensionPlugin', 'feed_content_type' ), 10, 2 );
 
 		// add the as1 feed
@@ -50,6 +49,11 @@ class ActivityStreamExtensionPlugin {
 		add_action( 'atom_author', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_author' ) ); // run before output
 		add_action( 'comment_atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
 		add_action( 'comment_atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_comment_atom_activity_object' ) );
+
+		// discovery
+		add_action( 'wp_head', array( 'ActivityStreamExtensionPlugin', 'add_html_header' ), 5 );
+		add_action( 'host_meta', array( 'ActivityStreamExtensionPlugin', 'add_host_meta_links' ) );
+		add_action( 'webfinger_user_data', array( 'ActivityStreamExtensionPlugin', 'add_webfinger_links' ), 10, 3 );
 	}
 
 	/**
@@ -115,6 +119,70 @@ class ActivityStreamExtensionPlugin {
 		<?php
 			}
 		}
+	}
+
+	/**
+	 * Add AS links to the host-meta file
+	 *
+	 * @param array $jrd the host-meta JRD array
+	 *
+	 * @return array the filtered array
+	 */
+	public static function add_host_meta_links( $jrd ) {
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystram-extension' ) ),
+			'href' => esc_url( get_feed_link( 'as1' ) )
+		);
+
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Comments Feed ', 'activitystram-extension' ) ),
+			'href' => esc_url( get_feed_link( 'comments_as1' ) )
+		);
+
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystram-extension' ) ),
+			'href' => esc_url( get_feed_link( 'as2' ) )
+		);
+
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Comments Feed ', 'activitystram-extension' ) ),
+			'href' => esc_url( get_feed_link( 'comments_as2' ) )
+		);
+
+		return $jrd;
+	}
+
+	/**
+	 * Add AS links to the webfinger file
+	 *
+	 * @param array $jrd the WebFinger JRD array
+	 *
+	 * @return array the filtered array
+	 */
+	public static function add_webfinger_links( $jrd, $acct, $user ) {
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystram-extension' ) ),
+			'href' => esc_url( get_author_feed_link( $user->ID, 'as1' ) )
+		);
+
+		$jrd['links'][] = array(
+			'rel' => 'feed',
+			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystram-extension' ) ),
+			'href' => esc_url( get_author_feed_link( $user->ID, 'as2' ) )
+		);
+
+		return $jrd;
 	}
 
 	/**
