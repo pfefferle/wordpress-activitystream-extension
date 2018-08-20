@@ -73,7 +73,7 @@ while ( have_comments() ) {
 			'id' => get_the_guid( $comment_post->ID ),
 			'displayName' => get_the_title( $comment_post->ID ),
 			'objectType' => $object_type,
-			'summary' => get_the_excerpt(),
+			'summary' => get_the_excerpt( $comment_post->ID ),
 			'url' => get_permalink( $comment_post->ID ),
 		),
 		'object' => (object) array(

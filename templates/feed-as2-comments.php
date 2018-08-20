@@ -80,7 +80,7 @@ while ( have_comments() ) {
 			'id' => get_the_guid( $comment_post->ID ),
 			'type' => $object_type,
 			'name' => get_the_title( $comment_post->ID ),
-			'summary' => get_the_excerpt(),
+			'summary' => get_the_excerpt( $comment_post->ID ),
 			'url' => get_permalink( $comment_post->ID ),
 		),
 		'object' => (object) array(
