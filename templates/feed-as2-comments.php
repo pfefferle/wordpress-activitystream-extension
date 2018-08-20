@@ -9,10 +9,10 @@ $json->{'@context'} = 'http://www.w3.org/ns/activitystreams';
 $json->type = 'Collection';
 if ( is_singular() ) {
 	$json->id = get_post_comments_feed_link( get_the_ID(), 'as2' );
-	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystram-extension' ), get_the_title() ) );
+	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystream_extension' ), get_the_title() ) );
 } else {
 	$json->id = get_feed_link( 'comments_as2' );
-	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystram-extension' ), get_bloginfo( 'name' ) ) );
+	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystream_extension' ), get_bloginfo( 'name' ) ) );
 }
 
 $json->totalItems = (int) get_option( 'posts_per_rss' );
@@ -75,7 +75,7 @@ while ( have_comments() ) {
 		'generator' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		'id' => get_post_comments_feed_link( get_the_ID(), 'as2' ),
 		'type' => 'Create',
-		'name' => esc_attr( sprintf( __( '%1$s posted a comment', 'activitystram-extension' ), get_comment_author() ) ),
+		'name' => esc_attr( sprintf( __( '%1$s posted a comment', 'activitystream_extension' ), get_comment_author() ) ),
 		'inReplyTo' => (object) array(
 			'id' => get_the_guid( $comment_post->ID ),
 			'type' => $object_type,

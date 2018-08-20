@@ -4,7 +4,7 @@
 **Tags:** ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD  
 **Requires at least:** 4.2  
 **Tested up to:** 4.9.4  
-**Stable tag:** 1.2.3  
+**Stable tag:** 1.3.0  
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
@@ -26,50 +26,66 @@ Thats it
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
 
+### 1.3.0 ###
+
+* Added enclosure support
+
 ### 1.2.3 ###
+
 * added WebFinger and host-meta discovery
 
 ### 1.2.2 ###
+
 * updated requirement
 * fixed licenses
 
 ### 1.2.1 ###
+
 * removed charset
 
 ### 1.2.0 ###
+
 * updated to latest spec: <http://www.w3.org/TR/2016/WD-activitystreams-core-20160712/>
 * fixed comment feed
 
 ### 1.1.0 ###
+
 * initial AS2 feed (beta)
 * WordPress coding standard
 
 ### 1.0.0 ###
+
 * changes based on the 7B plugin <https://github.com/pento/7B>
 * json-feed for comments
 * cleanup
 
 ### 0.8 ###
+
 * some JSON changes to match spec 1.0
 * changed the HTML discovery-links
 * added post_thumbnail support
 
 ### 0.7.1 ###
+
 * updated to new JSON-Activity changes
 
 ### 0.7 ###
+
 * deprecated `<activity:subject>`
 * enriched Atom `<author />`
 
 ### 0.6 ###
+
 * added json feed
 * pubsubhubbub for json
 
 ### 0.5 ###
+
 * some OStatus compatibility fixes
 * added `<activity:subject>`
 * added `<activity:target>`
 
 ### 0.3 ###
+
 * Fixed a namespace bug
 * Added autodiscovery link

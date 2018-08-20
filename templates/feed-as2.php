@@ -8,7 +8,7 @@ $json = new stdClass();
 $json->{'@context'} = 'http://www.w3.org/ns/activitystreams';
 $json->id = get_feed_link( 'as2' );
 $json->type = 'Collection';
-$json->name = esc_attr( sprintf( __( '%1$s - posts', 'activitystram-extension' ), get_bloginfo( 'name' ) ) );
+$json->name = esc_attr( sprintf( __( '%1$s - posts', 'activitystream_extension' ), get_bloginfo( 'name' ) ) );
 $json->totalItems = (int) get_option( 'posts_per_rss' );
 
 $json->items = array();
@@ -60,7 +60,7 @@ while ( have_posts() ) {
 		'generator' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		'id' => get_post_comments_feed_link( get_the_ID(), 'as2' ),
 		'type' => 'Create',
-		'name' => esc_attr( sprintf( __( '%1$s created a new post', 'activitystram-extension' ), get_the_author() ) ),
+		'name' => esc_attr( sprintf( __( '%1$s created a new post', 'activitystream_extension' ), get_the_author() ) ),
 		'target' => (object) array(
 			'id' => get_bloginfo( 'url' ),
 			'type' => 'http://schema.org/Blog',
@@ -89,6 +89,24 @@ while ( have_posts() ) {
 			),
 		),
 	);
+
+	$images = activitystream_extension_get_post_images( get_the_ID() );
+
+	// add attachments
+	if ( $images ) {
+		$attachments = array();
+
+		foreach ( $images as $image ) {
+			$attachment = array(
+				"type" => "Image",
+				"url" => $image,
+			);
+
+			$attachments[] = $attachment;
+		}
+
+		$item['object']->attachment = $attachments;
+	}
 
 	/*
 	 * The item to be added to the Activity Streams 1 feed

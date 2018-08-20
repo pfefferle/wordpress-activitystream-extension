@@ -5,10 +5,10 @@
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
  * Author URI: https://notiz.blog
- * Version: 1.2.3
+ * Version: 1.3.0
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
- * Text Domain: activitystram-extension
+ * Text Domain: activitystream-extension
  */
 
 add_action( 'init', array( 'ActivityStreamExtensionPlugin', 'init' ) );
@@ -27,6 +27,8 @@ class ActivityStreamExtensionPlugin {
 	 * Init function
 	 */
 	public static function init() {
+		require_once dirname( __FILE__ ) . '/includes/functions.php';
+
 		add_filter( 'query_vars', array( 'ActivityStreamExtensionPlugin', 'query_vars' ) );
 		add_filter( 'feed_content_type', array( 'ActivityStreamExtensionPlugin', 'feed_content_type' ), 10, 2 );
 
@@ -46,6 +48,7 @@ class ActivityStreamExtensionPlugin {
 		// extend core feeds with AS1
 		add_action( 'atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
 		add_action( 'atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_object' ) );
+		add_action( 'atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_atom_enclosure' ) );
 		add_action( 'atom_author', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_author' ) ); // run before output
 		add_action( 'comment_atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
 		add_action( 'comment_atom_entry', array( 'ActivityStreamExtensionPlugin', 'add_comment_atom_activity_object' ) );
@@ -106,8 +109,8 @@ class ActivityStreamExtensionPlugin {
 			return;
 		}
 		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Feed', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'as1' ) ); ?>" />
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Feed', 'activitystream_extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystream_extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activitystream_extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystream_extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
 		<?php
 		if ( is_singular() ) {
 			$id = 0;
@@ -115,7 +118,7 @@ class ActivityStreamExtensionPlugin {
 
 			if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
 		?>
-<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activitystram-extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystram-extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
+<link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activitystream_extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystream_extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
 		<?php
 			}
 		}
@@ -132,28 +135,28 @@ class ActivityStreamExtensionPlugin {
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as1' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystream_extension' ) ),
 			'href' => esc_url( get_feed_link( 'as1' ) )
 		);
 
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as1' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 1.0 Comments Feed ', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Comments Feed ', 'activitystream_extension' ) ),
 			'href' => esc_url( get_feed_link( 'comments_as1' ) )
 		);
 
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as2' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystream_extension' ) ),
 			'href' => esc_url( get_feed_link( 'as2' ) )
 		);
 
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as2' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 2.0 Comments Feed ', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Comments Feed ', 'activitystream_extension' ) ),
 			'href' => esc_url( get_feed_link( 'comments_as2' ) )
 		);
 
@@ -171,14 +174,14 @@ class ActivityStreamExtensionPlugin {
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as1' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystream_extension' ) ),
 			'href' => esc_url( get_author_feed_link( $user->ID, 'as1' ) )
 		);
 
 		$jrd['links'][] = array(
 			'rel' => 'feed',
 			'type' => esc_attr( feed_content_type( 'as2' ) ),
-			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystram-extension' ) ),
+			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystream_extension' ) ),
 			'href' => esc_url( get_author_feed_link( $user->ID, 'as2' ) )
 		);
 
@@ -212,6 +215,23 @@ class ActivityStreamExtensionPlugin {
 	<link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
 </activity:object>
 <?php
+	}
+
+	/**
+	 * Echos the activity verb and object for the wordpress entries
+	 */
+	public static function add_atom_enclosure() {
+		$images = activitystream_extension_get_post_images( get_the_ID() );
+
+		if ( ! $images ) {
+			return false;
+		}
+
+		foreach ( $images as $image ) {
+?>
+<link rel="enclosure" href="<?php echo $image; ?>" />
+<?php
+		}
 	}
 
 	/**
