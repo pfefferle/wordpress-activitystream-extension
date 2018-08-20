@@ -29,7 +29,7 @@ if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
 
 if ( preg_match( '/\W/', $callback ) ) {
 	status_header( 400 );
-	echo json_encode( array(
+	echo wp_json_encode( array(
 		'code'  => 'json_callback_invalid',
 		'message' => 'The JSONP callback function is invalid.',
 	) );
@@ -115,30 +115,24 @@ while ( have_comments() ) {
  */
 $json = apply_filters( 'comments_as1_feed', $json );
 
-if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
-	// json_encode() options added in PHP 5.3
-	$json_str = json_encode( $json );
-} else {
-	$options = 0;
-	// JSON_PRETTY_PRINT added in PHP 5.4
-	if ( get_query_var( 'pretty' ) && version_compare( phpversion(), '5.4.0', '>=' ) ) {
-		$options |= JSON_PRETTY_PRINT;
-	}
 
-	/*
-	 * Options to be passed to json_encode()
-	 *
-	 * @param int $options The current options flags
-	 */
-	$options = apply_filters( 'as1_feed_options', $options );
-
-	$json_str = json_encode( $json, $options );
+$options = 0;
+// JSON_PRETTY_PRINT added in PHP 5.4
+if ( get_query_var( 'pretty' ) && version_compare( phpversion(), '5.4.0', '>=' ) ) {
+	$options |= JSON_PRETTY_PRINT;
 }
 
+/*
+ * Options to be passed to json_encode()
+ *
+ * @param int $options The current options flags
+ */
+$options = apply_filters( 'as1_feed_options', $options );
+
 if ( ! empty( $callback ) ) {
-	echo "$callback( $json_str );";
+	echo esc_html( $callback ). '( '.wp_json_encode( $json, $options ).' );';
 } else {
-	echo $json_str;
+	echo wp_json_encode( $json );
 }
 
 /*
