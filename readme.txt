@@ -29,6 +29,7 @@ Project maintined on github at
 = 1.3.0 =
 
 * Added enclosure support
+* Fixed summary js-summary
 
 = 1.2.3 =
 
