@@ -99,7 +99,8 @@ while ( have_posts() ) {
 		foreach ( $images as $image ) {
 			$attachment = array(
 				"type" => "Image",
-				"url" => $image,
+				"url" => $image['url'],
+				"mediaType" => $image['type'],
 			);
 
 			$attachments[] = $attachment;
