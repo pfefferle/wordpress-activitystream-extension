@@ -57,7 +57,7 @@ function activitystream_extension_get_post_images( $id ) {
 	}
 	// get URLs for each image
 	foreach ( $image_ids as $id ) {
-		$thumbnail = wp_get_attachment_image_src( $id, 'full' );
+		$thumbnail = wp_get_attachment_image_src( $id, 'medium' );
 		$mimetype = get_post_mime_type( $id );
 
 		if ( $thumbnail ) {

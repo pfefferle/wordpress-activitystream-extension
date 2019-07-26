@@ -3,8 +3,8 @@
 **Donate link:** https://notiz.blog/donate/  
 **Tags:** ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD  
 **Requires at least:** 4.2  
-**Tested up to:** 4.9.8  
-**Stable tag:** 1.3.2  
+**Tested up to:** 5.2.2  
+**Stable tag:** 1.3.3  
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
@@ -25,6 +25,10 @@ Thats it
 
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
+
+### 1.3.3 ###
+
+* update dependencies
 
 ### 1.3.2 ###
 

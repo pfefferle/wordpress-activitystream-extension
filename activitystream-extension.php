@@ -5,7 +5,7 @@
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
  * Author URI: https://notiz.blog
- * Version: 1.3.2
+ * Version: 1.3.3
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: activitystream-extension
@@ -212,7 +212,7 @@ class ActivityStreamExtensionPlugin {
 	<id><?php the_guid(); ?></id>
 	<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
 	<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
-	<link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
+	<link rel="alternate" type="text/html" href="<?php the_permalink_rss(); ?>" />
 <?php
 		$images = activitystream_extension_get_post_images( get_the_ID() );
 
