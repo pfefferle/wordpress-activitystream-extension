@@ -20,20 +20,23 @@ $callback = apply_filters( 'as1_feed_callback', get_query_var( 'callback' ) );
 
 if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code'  => 'json_callback_disabled',
-		'message' => 'JSONP support is disabled on this site.',
-	) );
-
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_disabled',
+			'message' => 'JSONP support is disabled on this site.',
+		)
+	);
 	exit;
 }
 
 if ( preg_match( '/\W/', $callback ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code'  => 'json_callback_invalid',
-		'message' => 'The JSONP callback function is invalid.',
-	) );
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_invalid',
+			'message' => 'The JSONP callback function is invalid.',
+		)
+	);
 	exit;
 }
 
@@ -57,33 +60,33 @@ while ( have_posts() ) {
 		'generator' => (object) array(
 			'url' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		),
-		'provider' => (object) array(
+		'provider'  => (object) array(
 			'url' => get_feed_link( 'as1' ),
 		),
-		'verb' => 'post',
-		'target' => (object) array(
-			'id' => get_bloginfo( 'url' ),
-			'url' => get_bloginfo( 'url' ),
-			'objectType' => 'blog',
+		'verb'      => 'post',
+		'target'    => (object) array(
+			'id'          => get_bloginfo( 'url' ),
+			'url'         => get_bloginfo( 'url' ),
+			'objectType'  => 'blog',
 			'displayName' => get_bloginfo( 'name' ),
 		),
-		'object' => (object) array(
-			'id' => get_the_guid(),
+		'object'    => (object) array(
+			'id'          => get_the_guid(),
 			'displayName' => get_the_title(),
-			'objectType' => $object_type,
-			'summary' => get_the_excerpt(),
-			'url' => get_permalink(),
-			'content' => get_the_content(),
+			'objectType'  => $object_type,
+			'summary'     => get_the_excerpt(),
+			'url'         => get_permalink(),
+			'content'     => get_the_content(),
 		),
-		'actor' => (object) array(
-			'id' => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
+		'actor'     => (object) array(
+			'id'          => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
 			'displayName' => get_the_author(),
-			'objectType' => 'person',
-			'url' => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
-			'image' => (object) array(
-				'width' => 96,
+			'objectType'  => 'person',
+			'url'         => get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'nicename' ) ),
+			'image'       => (object) array(
+				'width'  => 96,
 				'height' => 96,
-				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+				'url'    => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
 			),
 		),
 	);

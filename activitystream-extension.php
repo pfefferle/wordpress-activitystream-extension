@@ -81,11 +81,11 @@ class ActivityStreamExtensionPlugin {
 	 * @return string the as1 content-type
 	 */
 	public static function feed_content_type( $content_type, $type ) {
-		if ( 'as1' == $type ) {
+		if ( 'as1' === $type ) {
 			return 'application/stream+json';
 		}
 
-		if ( 'as2' == $type ) {
+		if ( 'as2' === $type ) {
 			return 'application/activity+json';
 		}
 
@@ -113,13 +113,13 @@ class ActivityStreamExtensionPlugin {
 <link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s Activity-Streams Comments Feed ', 'activitystream_extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystream_extension' ) ) ); ?>" href="<?php echo esc_url( get_feed_link( 'comments_as1' ) ); ?>" />
 		<?php
 		if ( is_singular() ) {
-			$id = 0;
+			$id   = 0;
 			$post = get_post( $id );
 
 			if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
-		?>
+				?>
 <link rel="alternate" type="<?php echo esc_attr( feed_content_type( 'as1' ) ); ?>" title="<?php echo esc_attr( sprintf( __( '%1$s %2$s %3$s Activity-Streams Comments Feed', 'activitystream_extension' ), get_bloginfo( 'name' ), __( '&raquo;', 'activitystream_extension' ), esc_html( get_the_title() ) ) ); ?>" href="<?php echo esc_url( get_post_comments_feed_link( null, 'as1' ) ); ?>" />
-		<?php
+				<?php
 			}
 		}
 	}
@@ -133,31 +133,31 @@ class ActivityStreamExtensionPlugin {
 	 */
 	public static function add_host_meta_links( $jrd ) {
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as1' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystream_extension' ) ),
-			'href' => esc_url( get_feed_link( 'as1' ) )
+			'href'  => esc_url( get_feed_link( 'as1' ) ),
 		);
 
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as1' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 1.0 Comments Feed ', 'activitystream_extension' ) ),
-			'href' => esc_url( get_feed_link( 'comments_as1' ) )
+			'href'  => esc_url( get_feed_link( 'comments_as1' ) ),
 		);
 
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as2' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystream_extension' ) ),
-			'href' => esc_url( get_feed_link( 'as2' ) )
+			'href'  => esc_url( get_feed_link( 'as2' ) ),
 		);
 
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as2' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 2.0 Comments Feed ', 'activitystream_extension' ) ),
-			'href' => esc_url( get_feed_link( 'comments_as2' ) )
+			'href'  => esc_url( get_feed_link( 'comments_as2' ) ),
 		);
 
 		return $jrd;
@@ -172,17 +172,17 @@ class ActivityStreamExtensionPlugin {
 	 */
 	public static function add_webfinger_links( $jrd, $acct, $user ) {
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as1' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as1' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 1.0 Feed', 'activitystream_extension' ) ),
-			'href' => esc_url( get_author_feed_link( $user->ID, 'as1' ) )
+			'href'  => esc_url( get_author_feed_link( $user->ID, 'as1' ) ),
 		);
 
 		$jrd['links'][] = array(
-			'rel' => 'feed',
-			'type' => esc_attr( feed_content_type( 'as2' ) ),
+			'rel'   => 'feed',
+			'type'  => esc_attr( feed_content_type( 'as2' ) ),
 			'title' => esc_attr( __( 'Activity-Streams 2.0 Feed', 'activitystream_extension' ) ),
-			'href' => esc_url( get_author_feed_link( $user->ID, 'as2' ) )
+			'href'  => esc_url( get_author_feed_link( $user->ID, 'as2' ) ),
 		);
 
 		return $jrd;
@@ -192,11 +192,11 @@ class ActivityStreamExtensionPlugin {
 	 * Echos the activitystream namespace
 	 */
 	public static function add_atom_activity_namespace() {
-		echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"'."\n";
+		echo 'xmlns:activity="http://activitystrea.ms/spec/1.0/"' . "\n";
 	}
 
 	/**
-	 * Echos the activity verb and object for the wordpress entries
+	 * Echos the activity verb and object for the WordPress entries
 	 */
 	public static function add_atom_activity_object() {
 		/*
@@ -205,7 +205,7 @@ class ActivityStreamExtensionPlugin {
 		 * @param Object $comment_post The current post
 		 */
 		$object_type = apply_filters( 'as1_object_type', 'article', get_post() );
-?>
+		?>
 <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
 <activity:object>
 	<activity:object-type>http://activitystrea.ms/schema/1.0/<?php echo esc_attr( $object_type ); ?></activity:object-type>
@@ -213,23 +213,23 @@ class ActivityStreamExtensionPlugin {
 	<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
 	<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
 	<link rel="alternate" type="text/html" href="<?php the_permalink_rss(); ?>" />
-<?php
+		<?php
 		$images = activitystream_extension_get_post_images( get_the_ID() );
 
 		if ( $images ) {
 			foreach ( $images as $image ) {
-	?>
+				?>
 	<link rel="enclosure" type="<?php echo $image['type']; ?>" href="<?php echo $image['url']; ?>" />
-	<?php
+				<?php
 			}
 		}
-?>
+		?>
 </activity:object>
-<?php
+		<?php
 	}
 
 	/**
-	 * Echos the activity verb and object for the wordpress entries
+	 * Echos the activity verb and object for the WordPress entries
 	 */
 	public static function add_atom_enclosure() {
 		$images = activitystream_extension_get_post_images( get_the_ID() );
@@ -239,42 +239,42 @@ class ActivityStreamExtensionPlugin {
 		}
 
 		foreach ( $images as $image ) {
-?>
+			?>
 <link rel="enclosure" type="<?php echo $image['type']; ?>" href="<?php echo $image['url']; ?>" />
-<?php
+			<?php
 		}
 	}
 
 	/**
-	 * Echos the activity verb and object for the wordpress comments
+	 * Echos the activity verb and object for the WordPress comments
 	 */
 	public static function add_comment_atom_activity_object() {
-?>
+		?>
 <activity:verb>http://activitystrea.ms/schema/1.0/post</activity:verb>
 <activity:object>
 	<activity:object-type>http://activitystrea.ms/schema/1.0/comment</activity:object-type>
 	<id><?php comment_guid(); ?></id>
 	<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php comment_text(); ?>]]></content>
 	<link rel="alternate" href="<?php comment_link(); ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
-	<thr:in-reply-to ref="<?php the_guid() ?>" href="<?php the_permalink_rss() ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
+	<thr:in-reply-to ref="<?php the_guid(); ?>" href="<?php the_permalink_rss(); ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
 </activity:object>
 <activity:target>
 	<activity:object-type>http://activitystrea.ms/schema/1.0/article</activity:object-type>
 	<id><?php the_guid(); ?></id>
 	<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title(); ?>]]></title>
 	<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
-	<link rel="alternate" type="text/html" href="<?php the_permalink_rss() ?>" />
+	<link rel="alternate" type="text/html" href="<?php the_permalink_rss(); ?>" />
 </activity:target>
-<?php
+		<?php
 	}
 
 	/**
 	 * Add author informations to the Atom feed
 	 */
 	public static function add_atom_activity_author() {
-?>
+		?>
 <activity:object-type>http://activitystrea.ms/schema/1.0/person</activity:object-type>
-<?php
+		<?php
 	}
 
 	/**
@@ -356,7 +356,7 @@ class ActivityStreamExtensionPlugin {
 				$object_type = 'page';
 				break;
 			case 'attachment':
-				$mime_type = get_post_mime_type();
+				$mime_type  = get_post_mime_type();
 				$media_type = preg_replace( '/(\/[a-zA-Z]+)/i', '', $mime_type );
 
 				switch ( $media_type ) {
@@ -419,7 +419,7 @@ class ActivityStreamExtensionPlugin {
 				$object_type = 'Page';
 				break;
 			case 'attachment':
-				$mime_type = get_post_mime_type();
+				$mime_type  = get_post_mime_type();
 				$media_type = preg_replace( '/(\/[a-zA-Z]+)/i', '', $mime_type );
 
 				switch ( $media_type ) {

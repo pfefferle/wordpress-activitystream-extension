@@ -41,29 +41,29 @@ function activitystream_extension_get_post_images( $id ) {
 	// then list any image attachments
 	$query = new WP_Query(
 		array(
-			'post_parent' => $id,
-			'post_status' => 'inherit',
-			'post_type' => 'attachment',
+			'post_parent'    => $id,
+			'post_status'    => 'inherit',
+			'post_type'      => 'attachment',
 			'post_mime_type' => 'image',
-			'order' => 'ASC',
-			'orderby' => 'menu_order ID',
+			'order'          => 'ASC',
+			'orderby'        => 'menu_order ID',
 			'posts_per_page' => $max_images,
 		)
 	);
 	foreach ( $query->get_posts() as $attachment ) {
-		if ( ! in_array( $attachment->ID, $image_ids ) ) {
+		if ( ! in_array( $attachment->ID, $image_ids, true ) ) {
 			$image_ids[] = $attachment->ID;
 		}
 	}
 	// get URLs for each image
 	foreach ( $image_ids as $id ) {
 		$thumbnail = wp_get_attachment_image_src( $id, 'medium' );
-		$mimetype = get_post_mime_type( $id );
+		$mimetype  = get_post_mime_type( $id );
 
 		if ( $thumbnail ) {
 			$images[] = array(
-				'url' => $thumbnail[0],
-				'type' => $mimetype
+				'url'  => $thumbnail[0],
+				'type' => $mimetype,
 			);
 		}
 	}

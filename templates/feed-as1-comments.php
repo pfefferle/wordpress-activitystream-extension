@@ -20,19 +20,23 @@ $callback = apply_filters( 'as1_feed_callback', get_query_var( 'callback' ) );
 
 if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code' => 'json_callback_disabled',
-		'message' => 'JSONP support is disabled on this site.',
-	) );
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_disabled',
+			'message' => 'JSONP support is disabled on this site.',
+		)
+	);
 	exit;
 }
 
 if ( preg_match( '/\W/', $callback ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code' => 'json_callback_invalid',
-		'message' => 'The JSONP callback function is invalid.',
-	) );
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_invalid',
+			'message' => 'The JSONP callback function is invalid.',
+		)
+	);
 	exit;
 }
 
@@ -44,7 +48,8 @@ do_action( 'comments_as1_feed_pre' );
 while ( have_comments() ) {
 	the_comment();
 
-	$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
+	$GLOBALS['post'] = get_post( $comment->comment_post_ID );
+	$comment_post    = $GLOBALS['post'];
 
 	/*
 	 * The object type of the current post in the Activity Streams 1 feed
@@ -65,31 +70,31 @@ while ( have_comments() ) {
 		'generator' => (object) array(
 			'url' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
 		),
-		'provider' => (object) array(
+		'provider'  => (object) array(
 			'url' => get_post_comments_feed_link( $comment_post->ID, 'as1' ),
 		),
-		'verb' => 'post',
-		'target' => (object) array(
-			'id' => get_the_guid( $comment_post->ID ),
+		'verb'      => 'post',
+		'target'    => (object) array(
+			'id'          => get_the_guid( $comment_post->ID ),
 			'displayName' => get_the_title( $comment_post->ID ),
-			'objectType' => $object_type,
-			'summary' => get_the_excerpt( $comment_post->ID ),
-			'url' => get_permalink( $comment_post->ID ),
+			'objectType'  => $object_type,
+			'summary'     => get_the_excerpt( $comment_post->ID ),
+			'url'         => get_permalink( $comment_post->ID ),
 		),
-		'object' => (object) array(
-			'id' => get_comment_guid(),
+		'object'    => (object) array(
+			'id'         => get_comment_guid(),
 			'objectType' => $comment_object_type,
-			'content' => get_comment_text(),
-			'url' => get_comment_link(),
+			'content'    => get_comment_text(),
+			'url'        => get_comment_link(),
 		),
-		'actor' => (object) array(
+		'actor'     => (object) array(
 			'displayName' => get_comment_author(),
-			'objectType' => 'person',
-			'url' => get_comment_author_url(),
-			'image' => (object) array(
+			'objectType'  => 'person',
+			'url'         => get_comment_author_url(),
+			'image'       => (object) array(
 				'width'  => 96,
 				'height' => 96,
-				'url' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+				'url'    => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
 			),
 		),
 	);

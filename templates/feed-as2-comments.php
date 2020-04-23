@@ -6,15 +6,17 @@
 $json = new stdClass();
 
 $json->{'@context'} = 'http://www.w3.org/ns/activitystreams';
-$json->type = 'Collection';
+$json->type         = 'Collection';
+
 if ( is_singular() ) {
-	$json->id = get_post_comments_feed_link( get_the_ID(), 'as2' );
+	$json->id   = get_post_comments_feed_link( get_the_ID(), 'as2' );
 	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystream_extension' ), get_the_title() ) );
 } else {
-	$json->id = get_feed_link( 'comments_as2' );
+	$json->id   = get_feed_link( 'comments_as2' );
 	$json->name = esc_attr( sprintf( __( '"%1$s" - comments', 'activitystream_extension' ), get_bloginfo( 'name' ) ) );
 }
 
+// phpcs:ignore
 $json->totalItems = (int) get_option( 'posts_per_rss' );
 
 $json->items = array();
@@ -30,19 +32,23 @@ $callback = apply_filters( 'as2_feed_callback', get_query_var( 'callback' ) );
 
 if ( ! empty( $callback ) && ! apply_filters( 'json_jsonp_enabled', true ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code'  => 'json_callback_disabled',
-		'message' => 'JSONP support is disabled on this site.',
-	) );
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_disabled',
+			'message' => 'JSONP support is disabled on this site.',
+		)
+	);
 	exit;
 }
 
 if ( preg_match( '/\W/', $callback ) ) {
 	status_header( 400 );
-	echo wp_json_encode( array(
-		'code'  => 'json_callback_invalid',
-		'message' => 'The JSONP callback function is invalid.',
-	) );
+	echo wp_json_encode(
+		array(
+			'code'    => 'json_callback_invalid',
+			'message' => 'The JSONP callback function is invalid.',
+		)
+	);
 	exit;
 }
 
@@ -54,7 +60,8 @@ do_action( 'comments_as2_feed_pre' );
 while ( have_comments() ) {
 	the_comment();
 
-	$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
+	$GLOBALS['post'] = get_post( $comment->comment_post_ID );
+	$comment_post    = $GLOBALS['post'];
 
 	/*
 	 * The object type of the current post in the Activity Streams 1 feed
@@ -73,31 +80,31 @@ while ( have_comments() ) {
 	$item = array(
 		'published' => get_comment_time( 'Y-m-d\TH:i:s\Z', true ),
 		'generator' => 'http://wordpress.org/?v=' . get_bloginfo_rss( 'version' ),
-		'id' => get_post_comments_feed_link( get_the_ID(), 'as2' ),
-		'type' => 'Create',
-		'name' => esc_attr( sprintf( __( '%1$s posted a comment', 'activitystream_extension' ), get_comment_author() ) ),
+		'id'        => get_post_comments_feed_link( get_the_ID(), 'as2' ),
+		'type'      => 'Create',
+		'name'      => esc_attr( sprintf( __( '%1$s posted a comment', 'activitystream_extension' ), get_comment_author() ) ),
 		'inReplyTo' => (object) array(
-			'id' => get_the_guid( $comment_post->ID ),
-			'type' => $object_type,
-			'name' => get_the_title( $comment_post->ID ),
+			'id'      => get_the_guid( $comment_post->ID ),
+			'type'    => $object_type,
+			'name'    => get_the_title( $comment_post->ID ),
 			'summary' => get_the_excerpt( $comment_post->ID ),
-			'url' => get_permalink( $comment_post->ID ),
+			'url'     => get_permalink( $comment_post->ID ),
 		),
-		'object' => (object) array(
-			'id' => get_comment_guid(),
-			'type' => 'Note',
-			'name' => get_comment_text(),
+		'object'    => (object) array(
+			'id'      => get_comment_guid(),
+			'type'    => 'Note',
+			'name'    => get_comment_text(),
 			'content' => get_comment_text(),
-			'url' => get_comment_link(),
+			'url'     => get_comment_link(),
 		),
-		'actor' => (object) array(
-			'name' => get_comment_author(),
-			'type' => 'Person',
+		'actor'     => (object) array(
+			'name'  => get_comment_author(),
+			'type'  => 'Person',
 			'image' => (object) array(
-				'type' => 'Link',
+				'type'   => 'Link',
 				'width'  => 96,
 				'height' => 96,
-				'href' => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
+				'href'   => get_avatar_url( get_the_author_meta( 'email' ), array( 'size' => 96 ) ),
 			),
 		),
 	);
@@ -105,7 +112,7 @@ while ( have_comments() ) {
 	// check if comment author provided his URL
 	if ( get_comment_author_url() ) {
 		$item['actor']->url = get_comment_author_url();
-		$item['actor']->id = get_comment_author_url();
+		$item['actor']->id  = get_comment_author_url();
 	}
 
 	/*
