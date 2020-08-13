@@ -3,7 +3,7 @@ Contributors: pfefferle
 Donate link: https://notiz.blog/donate/
 Tags: ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD
 Requires at least: 4.2
-Tested up to: 5.2.2
+Tested up to: 5.5
 Stable tag: 1.3.3
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
