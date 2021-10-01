@@ -310,7 +310,7 @@ class ActivityStreamExtensionPlugin {
 	 *
 	 * @return array $feed_types The filtered list of supported feed types.
 	 */
-	function supported_feed_types( $feed_types ) {
+	public static function supported_feed_types( $feed_types ) {
 		$feed_types[] = 'as1';
 		$feed_types[] = 'as2';
 
