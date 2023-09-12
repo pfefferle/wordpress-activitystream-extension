@@ -96,8 +96,7 @@ class ActivityStreamExtensionPlugin {
 	 * Reset rewrite rules
 	 */
 	public static function flush_rewrite_rules() {
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules();
+		\flush_rewrite_rules();
 	}
 
 	/**
