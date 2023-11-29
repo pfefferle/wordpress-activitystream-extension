@@ -4,7 +4,7 @@
 **Tags:** ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD  
 **Requires at least:** 4.2  
 **Tested up to:** 6.4  
-**Stable tag:** 1.3.7  
+**Stable tag:** 1.3.8  
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
@@ -25,6 +25,11 @@ Thats it
 
 Project maintined on github at
 [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
+
+### 1.3.8 ###
+
+* CI/CD changes
+* optimized "flash rewrite rules"
 
 ### 1.3.7 ###
 
