@@ -1,7 +1,7 @@
 # ActivityStream extension #
 **Contributors:** [pfefferle](https://profiles.wordpress.org/pfefferle/)  
 **Donate link:** https://notiz.blog/donate/  
-**Tags:** ActivityStreams, Activity Stream, feed, RSS, Atom, JSON, JSON-LD  
+**Tags:** ActivityStreams, feed, RSS, Atom, JSON-LD  
 **Requires at least:** 4.2  
 **Tested up to:** 6.5  
 **Stable tag:** 1.3.8  
