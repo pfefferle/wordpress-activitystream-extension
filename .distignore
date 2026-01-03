@@ -10,8 +10,6 @@
 .distignore
 LINGUAS
 Makefile
-README.md
-readme.md
 CODE_OF_CONDUCT.md
 LICENSE.md
 _site
