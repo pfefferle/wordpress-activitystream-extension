@@ -22,8 +22,11 @@
   },
   "homepage": "https://github.com/pfefferle/wordpress-activitystream-extension",
   "devDependencies": {
-    "grunt": "^1.4.1",
-    "grunt-wp-i18n": "^1.0.3",
-    "grunt-wp-readme-to-markdown": "^2.0.1"
+    "@wordpress/env": "^10.0.0"
+  },
+  "scripts": {
+    "env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "env:destroy": "wp-env destroy"
   }
 }

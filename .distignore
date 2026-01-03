@@ -8,7 +8,6 @@
 .data
 .wordpress-org
 .distignore
-Gruntfile.js
 LINGUAS
 Makefile
 README.md
@@ -19,7 +18,7 @@ _site
 bin
 composer.json
 composer.lock
-docker-compose.yml
+.wp-env.json
 gulpfile.js
 package.json
 node_modules
