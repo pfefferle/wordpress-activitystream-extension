@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/pfefferle/wordpress-activitystream-extension",
   "devDependencies": {
-    "@wordpress/env": "^10.0.0"
+    "@wordpress/env": "^11.0.0"
   },
   "scripts": {
     "env:start": "wp-env start",
