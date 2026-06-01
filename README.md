@@ -6,6 +6,8 @@
 - Requires at least: 4.2
 - Tested up to: 7.0
 - Stable tag: 1.3.9
+- License: MIT
+- License URI: https://opensource.org/licenses/MIT
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
