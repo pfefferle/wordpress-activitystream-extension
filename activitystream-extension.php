@@ -5,7 +5,7 @@
  * Description: An extensions which adds several ActivityStreams (<a href="http://www.activitystrea.ms">activitystrea.ms</a>) Feeds
  * Author: Matthias Pfefferle
  * Author URI: https://notiz.blog
- * Version: 1.3.8
+ * Version: 1.3.9
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
  * Text Domain: activitystream-extension
@@ -43,7 +43,7 @@ class ActivityStreamExtensionPlugin {
 		add_filter( 'as2_object_type', array( 'ActivityStreamExtensionPlugin', 'post_as2_object_type' ), 10, 2 );
 
 		// push json feed
-		add_filter( 'pubsubhubbub_supported_feed_types', array( 'ActivityStreamExtensionPlugin', 'supported_feed_types' ) );
+		add_filter( 'websub_supported_feed_types', array( 'ActivityStreamExtensionPlugin', 'supported_feed_types' ) );
 
 		// extend core feeds with AS1
 		add_action( 'atom_ns', array( 'ActivityStreamExtensionPlugin', 'add_atom_activity_namespace' ) );
