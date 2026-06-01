@@ -4,8 +4,8 @@
 - Donate link: https://notiz.blog/donate/
 - Tags: ActivityStreams, feed, RSS, Atom, JSON-LD
 - Requires at least: 4.2
-- Tested up to: 6.5
-- Stable tag: 1.3.8
+- Tested up to: 7.0
+- Stable tag: 1.3.9
 
 ActivityStrea.ms feeds for WordPress (Atom and JSON(-LD))
 
@@ -25,6 +25,10 @@ Thats it
 ## Changelog
 
 Project maintined on github at [pfefferle/wordpress-activitystream-extension](https://github.com/pfefferle/wordpress-activitystream-extension/).
+
+### 1.3.9
+
+* renamed `pubsubhubbub_supported_feed_types` filter to `websub_supported_feed_types`
 
 ### 1.3.8
 
