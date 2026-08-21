@@ -4,7 +4,7 @@
 - Donate link: https://notiz.blog/donate/
 - Tags: ActivityStreams, feed, RSS, Atom, JSON-LD
 - Requires at least: 4.2
-- Tested up to: 7.0
+- Tested up to: 7.1
 - Stable tag: 1.3.9
 - License: MIT
 - License URI: https://opensource.org/licenses/MIT
